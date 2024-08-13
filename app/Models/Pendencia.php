@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Pendencia extends Model
 {
     use HasFactory;
+    protected $fillable = ['titulo','tipo'];
 }
