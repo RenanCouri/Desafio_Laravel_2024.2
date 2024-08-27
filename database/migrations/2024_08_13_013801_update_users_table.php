@@ -37,8 +37,8 @@ return new class extends Migration
             $table->dropColumn('CPF');
             $table->dropColumn('cargo');
             $table->dropForeign('endereco_id');
+            $table->dropColumn('endereco_id');
             $table->dropForeign('usuario_id_responsavel');
-            $table->dropForeColumn('endereco_id');
             $table->dropColumn('usuario_id_responsavel');
         });
     }

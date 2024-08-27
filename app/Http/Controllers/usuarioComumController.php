@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\User;
+use App\Models\Conta;
+use App\Models\Endereco;
 use Illuminate\Http\Request;
 
 class usuarioComumController extends Controller
@@ -10,18 +13,23 @@ class usuarioComumController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(User $user)
     {
-        $users=User::query()->where('tipo'=='usuario_comum')->get();
-        
-    }
+        $users=[];
+        if($user->cargo=='usuario_comum')
+           $users=$user;
+        else if($user->cargo=='gerente' || $user->cargo=='administrador'){
+           $users=$user->getUsuariosComuns();
+        }
+        return view('usuariosComuns.index',compact('users'));
+     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('usuariosComuns.create');
     }
 
     /**
@@ -29,8 +37,25 @@ class usuarioComumController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+           
+        $controller= new RegisteredUserController();
+      
+        
+        $complemento=null;
+        if($request->hasAny('complemento'))
+           $complemento=$request->complemento;
+        $dadosEndereco[] = $request->only(['pais','estado','cidade','bairro','rua','numero']);
+        $dadosEndereco['complemento']=$complemento;
+        $endereco = Endereco::create($dadosEndereco);
+
+        $extras=["cargo" => "usuario_comum",
+                 "endereco" => $endereco->id,
+        ];  
+        $user=$controller->store($request,$extras);
+        $dadosConta=$request->only(['numero_agencia','numero_conta','saldo','limite_transferencias','senha']);
+        $dadosConta['user_id']=$user->id;
+        Conta::create($dadosConta);
+      }
 
     /**
      * Display the specified resource.

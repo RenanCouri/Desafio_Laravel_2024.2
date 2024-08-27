@@ -49,4 +49,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+   public function users(){
+        return $this->hasMany(User::class);
+   }
+   public function user(){
+    return $this->belongsTo(User::class);
+   }
+   public function conta(){
+    return $this->hasOne(Conta::class);
+   }
+   public function getUsuariosComuns(){
+    $users=$this->users();
+    $usuariosComuns=[];
+    foreach($users as $user){
+        if($user->cargo=='usuario_comum')
+           $usuariosComuns[]=$user;
+    }
+    return $usuariosComuns;
+   }
 }
