@@ -29,26 +29,29 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request,array $extras)
     {
-        $request->validate([
+        /*$request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+        */
         $foto=null;
         if($request->hasFile('foto'))
            $foto=$request->foto;
-
-        $user = User::create([
+        $dados=[
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'data_nascimento' => $request->data_nascimento,
+            'CPF'=>$request->numero_cpf,
             'numero_telefone' => $request->numero_telefone,
-            'usuario_responsavel' => $request->usuario_responsavel_id,
+            'usuario_responsavel_id' => 1,
             'foto' => $foto,
-            'endereco' => $extras['endereco_id'],
+            'endereco_id' => 2,
             'cargo' => $extras['cargo']
-        ]);
+        ]; 
+        //dd($dados);
+        $user = User::create($dados);
 
         event(new Registered($user));
 

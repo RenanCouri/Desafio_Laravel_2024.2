@@ -24,7 +24,9 @@ class User extends Authenticatable
         'numero_telefone',
         'CPF',
         'data_nascimento',
-        'cargo'
+        'cargo',
+        'endereco_id',
+        'usuario_responsavel_id'
     ];
 
     /**
@@ -57,6 +59,9 @@ class User extends Authenticatable
    }
    public function conta(){
     return $this->hasOne(Conta::class);
+   }
+   public function endereco(){
+    return $this->belongsTo(Conta::class);
    }
    public function getUsuariosComuns(){
     $users=$this->users();

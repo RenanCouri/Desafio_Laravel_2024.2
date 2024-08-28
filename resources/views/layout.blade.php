@@ -10,7 +10,7 @@
 <body>
 
     <main>
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid" style="text-align:center">
             <h1 class="display-4">@yield('titulo')</h1>
             <p class="lead">@yield('paragrafoIntroducao')</p>
                    

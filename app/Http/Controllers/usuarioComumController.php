@@ -16,12 +16,14 @@ class usuarioComumController extends Controller
      */
     public function index(User $user)
     {
-        $users=[];
+        /*$users=[];
         if($user->cargo=='usuario_comum')
            $users=$user;
         else if($user->cargo=='gerente' || $user->cargo=='administrador'){
            $users=$user->getUsuariosComuns();
         }
+           */
+        $users=User::query()->get();
         return view('usuariosComuns.index',compact('users'));
      }
 
@@ -30,7 +32,7 @@ class usuarioComumController extends Controller
      */
     public function create()
     {
-        return view('usuariosComuns.create');
+        return view('usuariosComuns.criar');
     }
 
     /**
@@ -43,18 +45,22 @@ class usuarioComumController extends Controller
       
         
         $complemento=null;
-        if($request->hasAny('complemento'))
-           $complemento=$request->complemento;
-        $dadosEndereco[] = $request->only(['pais','estado','cidade','bairro','rua','numero']);
-        $dadosEndereco['complemento']=$complemento;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
+     
         $endereco = Endereco::create($dadosEndereco);
-
+         
         $extras=["cargo" => "usuario_comum",
-                 "endereco" => $endereco->id,
-        ];  
+                 "endereco_id" => $endereco->id,
+        ];
+  
         $user=$controller->store($request,$extras);
-        $dadosConta=$request->only(['numero_agencia','numero_conta','saldo','limite_transferencias','senha']);
+      
+        $dadosConta=$request->only(['numero_agencia','numero_conta','limite_transferencias','senha']);
         $dadosConta['user_id']=$user->id;
+        $dadosConta['saldo']=0;
         Conta::create($dadosConta);
       }
 
@@ -106,7 +112,7 @@ class usuarioComumController extends Controller
         $control->destroy($request);
         if($redr)
           return Redirect::to('/');
-        return Redirect::to('/usuarios');
+        return Redirect::to('/usuariosComuns');
 
     }
 }
