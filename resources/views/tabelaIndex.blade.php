@@ -1,9 +1,11 @@
 @extends('layout')
 
 @section('conteudo')
+     @if($permissao)
     <div class="d-flex p-3 justify-content-end">
         <a href="{{'/criar'}}@yield('nome_pagina')"><button class="btn btn-primary">Cadastrar Novo</button></a>
     </div>
+    @endif
     <table class="table mx-2">
         <thead>
             <tr>

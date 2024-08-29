@@ -14,7 +14,7 @@ class usuarioComumController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(User $user)
+    public function index(Request $request)
     {
         /*$users=[];
         if($user->cargo=='usuario_comum')
@@ -23,8 +23,17 @@ class usuarioComumController extends Controller
            $users=$user->getUsuariosComuns();
         }
            */
-        $users=User::query()->where('cargo','usuario_comum')->get();
-        return view('usuariosComuns.index',compact('users'));
+        $permissao=true;  
+        $user=$request->user(); 
+        if(($user->cargo==='administrador')) 
+           $users=$user->where('cargo','usuario_comum')->get();
+        else if($user->cargo==='gerente')
+           $users=$user->getUsuariosComuns();
+        else{
+           $users[]=$user;
+           $permissao=!$permissao;
+        }
+        return view('usuariosComuns.index',compact('users','permissao'));
      }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conta;
+use App\Models\Pendencia;
 use App\Models\Transacao;
 use Illuminate\Http\Request;
 
@@ -22,7 +24,60 @@ class TransacaoController extends Controller
     {
         //
     }
+    public function sacar(Request $request)
+    {
+        $dados=$request->only(['valor','conta_remetente_id','autoridade_id']);
+        $dados['conta_destinatario_id']=$request->conta_remetente_id;
+        $dados['tipo']='saque';
+        $dados['esta_pendente']=false;
+        $conta=Conta::find($request->conta_remetente_id);
+        if($conta->saldo>=$request->valor){
+           $transacao= Transacao::create([$dados]);
+           $conta->saldo-=$request->valor;
+        }   
+        return redirect()->back();
+    }
+    public function depositar(Request $request)
+    {
+        $dados=$request->only(['valor','autoridade_id']);
+        $conta=Conta::query()->where('numero_conta',$request->numero_conta)->get()[0];
+        $dados['conta_destinatario_id']=$dados['conta_remetente_id']=$conta->id;
+        $dados['tipo']='deposito';
+        $dados['esta_pendente']=false;
+        $transacao= Transacao::create([$dados]);
+        $conta->saldo+=$request->valor;
+         
+        return redirect()->back();
+    }
+    public function requerirTransferencia(Request $request){
 
+        $dados=$request->only(['valor','conta_remetente_id']);
+        $dados['tipo']='transferencia';
+        $dados['esta_pendente']=true;
+        $contaRem=Conta::find($request->conta_remetente_id);
+        $contaDes=Conta::query()->where('numero_conta',$request->numero_conta)->get()[0];
+        $dados['conta_destinatario_id']=$contaDes->id;
+        if($contaRem->saldo>=$request->valor)
+        {
+           $transacao= Transacao::create([$dados]);
+           if($contaRem->limite_transferencias<$request->valor)
+           {
+            Pendencia::create(['titulo'=>'Valor de Transferência excede os limites',
+                                'tipo'=>'transferencia',
+                                'foi_resolvida'=>false,
+                                'transacao_id'=>$transacao->id,
+                                'emprestimo_id'=>false
+
+            ]);
+           }
+           else{
+            $transacao->esta_prendente=false;
+            $contaRem->saldo -= $request->valor;
+            $contaDes->saldo += $request->valor;
+            }
+        }
+        return redirect()->back();
+    }
     /**
      * Store a newly created resource in storage.
      */
