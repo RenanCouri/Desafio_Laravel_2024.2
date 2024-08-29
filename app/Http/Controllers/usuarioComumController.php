@@ -76,11 +76,22 @@ class usuarioComumController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $userId)
+    public function show(int $userId,Request $request)
     {
-        $user=User::find($userId);
+        $atual=$request->user();
+        if($atual->cargo==='usuario_comum')
+           {
+            $user=$atual;
+           }
+        else 
+        {
+            $user=User::find($userId);
+            if(($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user)) || $user->cargo!=='usuario_comum')
+               return redirect()->back();
+        }
+        $endereco=Endereco::find($user->endereco_id);
         $conta=$user->conta();
-        return view('usuariosComuns.view',$user,$conta);
+        return view('usuariosComuns.ver',compact('user','endereco','conta'));
     }
 
     /**
