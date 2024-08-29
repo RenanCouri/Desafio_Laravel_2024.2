@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\User;
+use App\Models\Conta;
+use App\Models\Endereco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class gerenteController extends Controller
 {
@@ -12,7 +16,8 @@ class gerenteController extends Controller
      */
     public function index()
     {
-        //
+        $users=User::query()->where('cargo','gerente')->get();
+        return view('gerentes.index',compact('users'));
     }
 
     /**
@@ -20,7 +25,7 @@ class gerenteController extends Controller
      */
     public function create()
     {
-        //
+        return view('gerentes.criar');
     }
 
     /**
@@ -28,7 +33,27 @@ class gerenteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $controller= new RegisteredUserController();
+      
+        
+        $complemento=null;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
+     
+        $endereco = Endereco::create($dadosEndereco);
+         
+        $extras=["cargo" => "gerente",
+                 "endereco_id" => $endereco->id,
+        ];
+  
+        $user=$controller->store($request,$extras);
+      
+        $dadosConta=$request->only(['numero_agencia','numero_conta','limite_transferencias','senha']);
+        $dadosConta['user_id']=$user->id;
+        $dadosConta['saldo']=0;
+        Conta::create($dadosConta);
     }
 
     /**

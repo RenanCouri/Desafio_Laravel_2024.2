@@ -23,7 +23,7 @@ class usuarioComumController extends Controller
            $users=$user->getUsuariosComuns();
         }
            */
-        $users=User::query()->get();
+        $users=User::query()->where('cargo','usuario_comum')->get();
         return view('usuariosComuns.index',compact('users'));
      }
 

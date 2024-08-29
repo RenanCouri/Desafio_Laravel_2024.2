@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Models\Endereco;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,8 @@ class adminController extends Controller
      */
     public function index()
     {
-        //
+        $users=User::query()->where('cargo','administrador')->get();
+        return view('administradores.index',compact('users'));
     }
 
     /**
@@ -20,7 +23,7 @@ class adminController extends Controller
      */
     public function create()
     {
-        //
+        return view('administradores.criar');
     }
 
     /**
@@ -28,7 +31,22 @@ class adminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $controller= new RegisteredUserController();
+      
+        
+        $complemento=null;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
+     
+        $endereco = Endereco::create($dadosEndereco);
+         
+        $extras=["cargo" => "administrador",
+                 "endereco_id" => $endereco->id,
+        ];
+  
+        $controller->store($request,$extras);
     }
 
     /**
