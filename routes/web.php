@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\adminController;
+use App\Http\Controllers\gerenteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\usuarioComumController;
 use Illuminate\Support\Facades\Route;
@@ -8,8 +10,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/usuariosComuns',[usuarioComumController::class,'index']);
-Route::get('/criar',[usuarioComumController::class,'create']);
-Route::post('/criar',[usuarioComumController::class,'store']);
+Route::get('/criarUsuarioComum',[usuarioComumController::class,'create']);
+Route::post('/criarUsuarioComum',[usuarioComumController::class,'store']);
+Route::get('/gerentes',[gerenteController::class,'index']);
+Route::get('/criarGerente',[gerenteController::class,'create']);
+Route::post('/criarGerente',[gerenteController::class,'store']);
+Route::get('/administradores',[adminController::class,'index']);
+Route::get('/criarAdministrador',[adminController::class,'create']);
+Route::post('/criarAdministrador',[adminController::class,'store']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

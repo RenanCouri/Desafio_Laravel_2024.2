@@ -1,10 +1,10 @@
 @extends('formCriarBasico')
 
 @section('TituloCabecalho')
-criar_usuario
+criar_gerente
 @endsection
 @section('titulo')
-Criar Usuário
+Criar Gerente
 @endsection
 @section('parte_contas')
 <div class="form-group">
@@ -18,6 +18,3 @@ Criar Usuário
             <input type="number" name="senha" id="senha" required class="form-control">
 </div>
 @endsection
-
-
-

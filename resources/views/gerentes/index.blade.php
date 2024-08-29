@@ -1,10 +1,10 @@
 @extends('tabelaIndex')
 @section('TituloCabecalho')
-usuariosComuns
+Gerentes
 @endsection
 @section('titulo')
-Usuários Comuns
+Gerentes
 @endsection
 @section('nome_pagina')
-UsuarioComum
+Gerente
 @endsection

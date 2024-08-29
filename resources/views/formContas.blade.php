@@ -1,12 +1,4 @@
-@extends('formCriarBasico')
-
-@section('TituloCabecalho')
-criar_usuario
-@endsection
-@section('titulo')
-Criar Usuário
-@endsection
-@section('parte_contas')
+@yield('previo')
 <div class="form-group">
             <label for="numero_agencia">agencia:</label>
             <input type="text" name="numero_agencia" id="numero_agencia" required class="form-control">
@@ -17,7 +9,4 @@ Criar Usuário
             <label for="senha">senha:</label>
             <input type="number" name="senha" id="senha" required class="form-control">
 </div>
-@endsection
-
-
-
+@yield('apos')
