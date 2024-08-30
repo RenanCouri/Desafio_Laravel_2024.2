@@ -21,6 +21,7 @@ Route::get('/administradores',[adminController::class,'index']);
 Route::get('/verAdministrador/{admId}',[adminController::class,'show']);
 Route::get('/criarAdministrador',[adminController::class,'create']);
 Route::post('/criarAdministrador',[adminController::class,'store']);
+Route::post('/excluirUsuarioComum',[usuarioComumController::class,'destroy']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

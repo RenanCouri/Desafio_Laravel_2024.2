@@ -21,10 +21,15 @@
                    <td>{{$user->name}}</td>
                    <td>{{$user->email}}</td>
                    <td>{{$user->CPF}}</td>
-                   <td >
-                   <a href="{{'/editar'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Editar</button></a>
+                   <td class="row">
+                   <a href="{{'/editar'}}@yield('nome_pagina')/{{$user->id}}" ><button class="btn btn-primary mx-2">Editar</button></a>
                    <a href="{{'/ver'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Ver</button></a>
-                   <a href="{{'/excluir'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Excluir</button></a>
+                   <form method="post" action="{{'/excluir'}}@yield('nome_pagina')"
+                   onsubmit="return confirm('Tem certeza que deseja remover {{ addslashes($user->name) }}?')">
+                   @csrf
+                   <input type="hidden" value="{{$user->id}}" name="user_id"> 
+                   <button type="submit" class="btn btn-danger mx-2">Excluir</button>
+                   </form>
                    </td>
               </tr>
              @endforeach 

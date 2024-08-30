@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Conta;
 use App\Models\Endereco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class usuarioComumController extends Controller
@@ -127,15 +128,23 @@ class usuarioComumController extends Controller
     public function destroy(Request $request)
     {
         
-        $user = $request->user();
-
-        $redr = boolval($user->id===$request->id);
-        $conta=$user->conta();
+        $user = User::find($request->user_id);
+        
+        $atual= $request->user();
+        $redr = $atual->id==$request->user_id;
+     
+        $conta=$user->conta;
         $conta->delete();
-        $control = new ProfileController();
-        $control->destroy($request);
-        if($redr)
+        $user->delete();
+
+        
+
+        if($redr){
+         Auth::logout();
           return Redirect::to('/');
+          $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        }  
         return Redirect::to('/usuariosComuns');
 
     }
