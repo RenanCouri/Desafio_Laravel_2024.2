@@ -58,18 +58,28 @@ class User extends Authenticatable
     return $this->belongsTo(User::class);
    }
    public function conta(){
-    return $this->hasOne(Conta::class);
+    return $this->hasOne(Conta::class,"user_id");
    }
    public function endereco(){
     return $this->belongsTo(Conta::class);
    }
    public function getUsuariosComuns(){
-    $users=$this->users();
-    $usuariosComuns=[];
+    $users=$this->users;
+    $gerentes=[];
     foreach($users as $user){
         if($user->cargo=='usuario_comum')
            $usuariosComuns[]=$user;
     }
-    return $usuariosComuns;
+    
+    
    }
+   public function getGerentes(){
+    $users=$this->users;
+    $gerentes=[];
+    foreach($users as $user){
+        if($user->cargo=='gerente')
+           $gerentes[]=$user;
+    }
+    return $gerentes;
+}
 }

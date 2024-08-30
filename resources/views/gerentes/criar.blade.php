@@ -18,3 +18,6 @@ Criar Gerente
             <input type="number" name="senha" id="senha" required class="form-control">
 </div>
 @endsection
+@section('retorno')
+gerentes
+@endsection

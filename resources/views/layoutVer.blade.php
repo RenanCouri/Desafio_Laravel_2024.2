@@ -1,56 +1,100 @@
 @extends('Layout')
-@section('conteudo')
-
+@section('adicoes_cabecalho')
+<style>
+    div>div{
+        background-color: lightblue;
+        border-top: 2px solid rgb(102,105,105);
        
-            <p >Nome:   <span>{{$user->name}}</span> </p>
+    }
+    main{
+        background-color: rgb(220, 220, 220);
+    }
+    div>div:nth-last-of-type(1){
+        border-bottom: 2px solid rgb(102,105,105);
+    }
+    
+    html{
+        background-color: rgb(220, 220, 220);
+    }
+    h1~p{
+        background-color: rgb(220, 220, 190);
+    }
+    p{
+        font-weight: bold;
+    }
+    span{
+        font-weight:500;
+        color:darkgreen;
+    }
+    
+    
+</style>
+@endsection
+@section('conteudo')
+       <a href="{{'/'}}@yield('retorno')"><div class="btn btn-primary mb-2 mx-2"><--</div></a>
+       <div class="p-3 " style="background-color:lightblue">
+       <div class=row >   
+       <p class="col-sm-6" >Nome:   <span>{{$user->name}}</span> </p>
               
         
     
         
-            <p >E-mail:   <span>{{$user->email}}</span> </p>
+            <p class="col-sm-6">E-mail:   <span>{{$user->email}}</span> </p>
             
-            <p >Senha:   <span>{{$user->password}}</span> </p>
+         
        
-            <p >CPF:    <span>{{$user->CPF}}</span> </p>
+            
        
-        
-        
-            <p >Número de telefone:    <span>{{$user->numero_telefone}}</span> </p>
-       
-        
-        
-            <p>data de nascimento:     <span>{{$user->data_nascimento}}</span> </p>
+        </div>  
+        <div class=row > 
+        <p class="col-sm-6">CPF:    <span>{{$user->CPF}}</span> </p>
+            <p class="col-sm-6">Número de telefone:    <span>{{$user->numero_telefone}}</span> </p>
        
         
         
-            <p >país:     <span>{{$endereco->pais}}</span> </p>
             
-            <p >estado:       <span>{{$endereco->estado}}</span> </p>
+       
+        </div>
+        <div class=row >
+        <p class="col-sm-6">data de nascimento:     <span>{{$user->data_nascimento}}</span> </p>
+            <p class="col-sm-6">país:     <span>{{$endereco->pais}}</span> </p>
             
-            <p >cidade:     <span>{{$endereco->cidade}}</span> </p>
             
+        </div>   
         
-        
-            <p >bairro:      <span>{{$endereco->bairro}}</span> </p>
+        <div class=row >
+        <p class="col-sm-6">estado:       <span>{{$endereco->estado}}</span> </p>
             
-            <p >rua:         <span>{{$endereco->rua}}</span> </p>
+            <p class="col-sm-6">cidade:     <span>{{$endereco->cidade}}</span> </p>
+        </div> 
+          <div class=row >   
+            <p class="col-sm-6">bairro:      <span>{{$endereco->bairro}}</span> </p>
             
-            <p >número:        <span>{{$endereco->numero_predial}}</span> </p>
+            <p class="col-sm-6">rua:         <span>{{$endereco->rua}}</span> </p>
+          </div>  
+          <div class=row > 
+            <p class="col-sm-6">número:        <span>{{$endereco->numero_predial}}</span> </p>
+            <p class="col-sm-6">complemento: 
             @if($endereco->complemento!==null)
-            <p >complemento:        <span>{{$endereco->complemento}}</span> </p>
-            @endif
-        
+                   <span>{{$endereco->complemento}}</span> 
+            
+            @else
+               -
+               @endif
+            </p>
+          </div>
         @if($user->cargo !== 'administrador')
-       
-            <p >agencia:   {{$conta->numero_agencia}}</p>
+        <div class=row >  
+            <p class="col-sm-6">agencia:   <span>{{$conta->numero_agencia}}</span></p>
              
-            <p >conta:   {{$conta->numero_conta}}</p>
+            <p class="col-sm-6">conta:  <span> {{$conta->numero_conta}}</span></p>
+        </div>
+        <div class=row >     
+            <p class="col-sm-6">limite:   <span>{{$conta->limite_transferencias}}</span></p>
             
-            <p >limite:   {{$conta->limite_transferencias}}</p>
-            
-            <p >senha:  {{$conta->senha}}</p>
-            
+            <p class="col-sm-6">senha: <span> {{$conta->senha}}</span></p>
+        </div>    
        
         @endif
-
+        </div>
 @endsection

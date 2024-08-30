@@ -15,7 +15,8 @@ class adminController extends Controller
     public function index()
     {
         $users=User::query()->where('cargo','administrador')->get();
-        return view('administradores.index',compact('users'));
+        $permissao=true;
+        return view('administradores.index',compact('users','permissao'));
     }
 
     /**
@@ -52,9 +53,16 @@ class adminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(int $admId,Request $request)
     {
-        //
+        $atual=$request->user();
+        $user=User::find($admId);
+            if( $user!==null && $user->cargo!=='administrador')
+               return redirect('/administradores');
+    
+        $endereco=Endereco::find($user->endereco_id);
+      
+        return view('administradores.ver',compact('user','endereco'));
     }
 
     /**

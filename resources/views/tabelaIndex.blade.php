@@ -22,9 +22,9 @@
                    <td>{{$user->email}}</td>
                    <td>{{$user->CPF}}</td>
                    <td >
-                   <a href="{{'/editar'}}@yield('nome_pagina')"><button class="btn btn-primary mx-2">Editar</button></a>
-                   <a href="{{'/ver'}}@yield('nome_pagina')"><button class="btn btn-primary mx-2">Ver</button></a>
-                   <a href="{{'/excluir'}}@yield('nome_pagina')"><button class="btn btn-primary mx-2">Excluir</button></a>
+                   <a href="{{'/editar'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Editar</button></a>
+                   <a href="{{'/ver'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Ver</button></a>
+                   <a href="{{'/excluir'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Excluir</button></a>
                    </td>
               </tr>
              @endforeach 

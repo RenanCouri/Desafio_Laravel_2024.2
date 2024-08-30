@@ -1,11 +1,11 @@
 @extends('layoutVer')
 
 @section('TituloCabecalho')
-ver_usuario
+ver_gerente
 @endsection
 @section('titulo')
-Dados Usuário
+Dados Gerente
 @endsection
 @section('retorno')
-usuariosComuns
+gerentes
 @endsection

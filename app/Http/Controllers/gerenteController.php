@@ -17,7 +17,8 @@ class gerenteController extends Controller
     public function index()
     {
         $users=User::query()->where('cargo','gerente')->get();
-        return view('gerentes.index',compact('users'));
+        $permissao=true;
+        return view('gerentes.index',compact('users','permissao'));
     }
 
     /**
@@ -59,9 +60,17 @@ class gerenteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(int $gerenteId,Request $request)
     {
-        //
+        $atual=$request->user();
+        $user=User::find($gerenteId);
+            if(($atual->cargo==='gerente' && !$atual->getGerentes()->contains($user)) ||$user===null|| $user->cargo!=='gerente')
+               return redirect('/gerentes');
+    
+        $endereco=Endereco::find($user->endereco_id);
+        $conta=$user->conta;
+      
+        return view('gerentes.ver',compact('user','endereco','conta'));
     }
 
     /**

@@ -18,6 +18,8 @@ Criar Usuário
             <input type="number" name="senha" id="senha" required class="form-control">
 </div>
 @endsection
-
+@section('retorno')
+usuariosComuns
+@endsection
 
 

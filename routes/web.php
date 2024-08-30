@@ -12,10 +12,13 @@ Route::get('/', function () {
 Route::get('/usuariosComuns',[usuarioComumController::class,'index']);
 Route::get('/criarUsuarioComum',[usuarioComumController::class,'create']);
 Route::post('/criarUsuarioComum',[usuarioComumController::class,'store']);
+Route::get('/verUsuarioComum/{userId}',[usuarioComumController::class,'show']);
 Route::get('/gerentes',[gerenteController::class,'index']);
 Route::get('/criarGerente',[gerenteController::class,'create']);
+Route::get('/verGerente/{gerenteId}',[gerenteController::class,'show']);
 Route::post('/criarGerente',[gerenteController::class,'store']);
 Route::get('/administradores',[adminController::class,'index']);
+Route::get('/verAdministrador/{admId}',[adminController::class,'show']);
 Route::get('/criarAdministrador',[adminController::class,'create']);
 Route::post('/criarAdministrador',[adminController::class,'store']);
 Route::get('/dashboard', function () {

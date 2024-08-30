@@ -81,16 +81,20 @@ class usuarioComumController extends Controller
         $atual=$request->user();
         if($atual->cargo==='usuario_comum')
            {
-            $user=$atual;
+            if($atual->id!==$userId)
+              return redirect("/verUsuarioComum/$atual->id");
+            else
+               $user=$atual;
            }
         else 
         {
             $user=User::find($userId);
-            if(($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user)) || $user->cargo!=='usuario_comum')
-               return redirect()->back();
+            if($user!==null && (($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user)) || $user->cargo!=='usuario_comum'))
+            return redirect('/usuariosComuns');
         }
         $endereco=Endereco::find($user->endereco_id);
-        $conta=$user->conta();
+        $conta=$user->conta;
+      
         return view('usuariosComuns.ver',compact('user','endereco','conta'));
     }
 

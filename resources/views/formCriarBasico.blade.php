@@ -1,6 +1,7 @@
 @extends('layout')
 
 @section('conteudo')
+<a href="{{'/'}}@yield('retorno')"><div class="btn btn-primary mb-2 mx-2"><--</div></a>
 <form method="post"  style="margin:auto 2% 5% 2%;"  >
 @csrf    
         

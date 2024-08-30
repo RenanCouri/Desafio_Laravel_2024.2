@@ -1,13 +1,10 @@
-@extends('formCriarBasico')
+@extends('layoutVer')
 
 @section('TituloCabecalho')
-criar_admnistrador
+ver_administrador
 @endsection
 @section('titulo')
-Criar Administrador
-@endsection
-@section('parte_contas')
-
+Dados Administrador
 @endsection
 @section('retorno')
 administradores
