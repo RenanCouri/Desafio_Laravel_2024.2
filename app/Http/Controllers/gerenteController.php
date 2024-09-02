@@ -65,9 +65,21 @@ class gerenteController extends Controller
     public function show(int $gerenteId,Request $request)
     {
         $atual=$request->user();
-        $user=User::find($gerenteId);
-            if(($atual->cargo==='gerente' && !$atual->getGerentes()->contains($user)) ||$user===null|| $user->cargo!=='gerente')
-               return redirect('/gerentes');
+        if($atual->cargo==='gerente')
+           {
+            if($atual->id!==$gerenteId)
+              return redirect("/verGerente/$atual->id");
+            else
+               $user=$atual;
+           }
+        else 
+        {
+            $user=User::find($gerenteId);
+            if($user===null || $user->cargo !== 'gerente')
+                return redirect('/gerentes');
+            
+        }
+        
     
         $endereco=Endereco::find($user->endereco_id);
         $conta=$user->conta;
@@ -80,14 +92,21 @@ class gerenteController extends Controller
      */
     public function edit(Request $request,int $gerenteId)
     {
-        $user=User::find($gerenteId);
         $atual=$request->user();
-        $user=User::find($gerenteId);
+        if($atual->cargo==='gerente')
+           {
+            if($atual->id!==$gerenteId)
+              return redirect("/editarGerente/$atual->id");
+            else
+               $user=$atual;
+           }
+        else 
+        {
+            $user=User::find($gerenteId);
             if($user===null || $user->cargo !== 'gerente')
                 return redirect('/gerentes');
-            if($atual->cargo==='gerente' && !$atual->getGerentes()->contains($user))
-               return redirect('/gerentes');
-       
+            
+        }
         $endereco=Endereco::find($user->endereco_id);
         return view('gerentes.editar',compact('user','endereco'));
     }
@@ -125,18 +144,31 @@ class gerenteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user,Request $request)
+    public function destroy(Request $request)
     {
-        $user = User::find($request->user_id);
+        $atual=$request->user();
+        $gerenteId=$request->user_id;
+        if($atual->cargo==='gerente')
+           {
+            if($atual->id!==$gerenteId)
+              return redirect("/gerentes");
+            else
+               $user=$atual;
+           }
+        else 
+        {
+            $user=User::find($gerenteId);
+            if($user===null || $user->cargo !== 'gerente')
+                return redirect('/gerentes');
+            
+        }
         
-        $atual= $request->user();
+       
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
         $conta->delete();
         $user->delete();
-
-        
 
         if($redr){
          Auth::logout();

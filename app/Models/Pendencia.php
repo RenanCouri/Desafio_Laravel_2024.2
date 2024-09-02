@@ -8,5 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Pendencia extends Model
 {
     use HasFactory;
-    protected $fillable = ['titulo','tipo'];
+    protected $guarded = [];
+    public function transacao(){
+        return $this->belongsTo(Transacao::class,'transacao_id');
+    }
+    public function emprestimo(){
+        return $this->belongsTo(Emprestimo::class,'emprestimo_id');
+    }
 }

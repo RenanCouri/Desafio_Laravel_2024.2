@@ -12,4 +12,21 @@ class Conta extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+    public function transacoes(){
+        return $this->hasMany(Transacao::class);
+    }
+    public function sacar($valor){
+        if($valor<0 || $valor> $this->saldo)
+           return false;
+        $this->saldo-=$valor;
+        $this->save();
+        return true;
+    }
+    public function depositar($valor){
+        if($valor<0)
+           return false;
+        $this->saldo+=$valor;
+        $this->save();
+        return true;
+    }
 }

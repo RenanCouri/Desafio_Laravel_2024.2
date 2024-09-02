@@ -9,5 +9,7 @@ class Emprestimo extends Model
 {
     use HasFactory;
     protected $fillable = ['valor','taxa_juros_mensal','data_limite'];
-  
+    public function Pendencia(){
+        return $this->hasOne(Pendencia::class);
+    }
 }

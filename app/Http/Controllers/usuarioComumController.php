@@ -165,10 +165,24 @@ class usuarioComumController extends Controller
      */
     public function destroy(Request $request)
     {
-        
-        $user = User::find($request->user_id);
-        
-        $atual= $request->user();
+        $userId=$request->user_id;
+        $user=User::find($userId);
+        $atual=$request->user();
+        if($atual->cargo==='usuario_comum')
+           {
+            if($atual->id!==$userId)
+              return redirect("/usuariosComuns");
+            else
+               $user=$atual;
+           }
+           else 
+        {
+            $user=User::find($userId);
+            if($user===null || $user->cargo !== 'usuario_comum')
+                return redirect('/usuariosComuns');
+            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
+               return redirect('/usuariosComuns');
+        }
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
