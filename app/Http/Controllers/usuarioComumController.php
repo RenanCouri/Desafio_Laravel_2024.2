@@ -72,6 +72,7 @@ class usuarioComumController extends Controller
         $dadosConta['user_id']=$user->id;
         $dadosConta['saldo']=0;
         Conta::create($dadosConta);
+        return redirect('/usuariosComuns');
       }
 
     /**
@@ -90,7 +91,9 @@ class usuarioComumController extends Controller
         else 
         {
             $user=User::find($userId);
-            if($user!==null && (($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user)) || $user->cargo!=='usuario_comum'))
+            if($user===null || $user->cargo !== 'usuario_comum')
+                return redirect('/usuariosComuns');
+            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user) )
             return redirect('/usuariosComuns');
         }
         $endereco=Endereco::find($user->endereco_id);
@@ -102,10 +105,29 @@ class usuarioComumController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(int $userId)
+    public function edit(int $userId,Request $request)
     {
         $user=User::find($userId);
-        return view('usuariosComuns.view',$user);
+        $atual=$request->user();
+        if($atual->cargo==='usuario_comum')
+           {
+            if($atual->id!==$userId)
+              return redirect("/verUsuarioComum/$atual->id");
+            else
+               $user=$atual;
+           }
+           else 
+        {
+            $user=User::find($userId);
+            if($user===null || $user->cargo !== 'usuario_comum')
+                return redirect('/usuariosComuns');
+            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
+               return redirect('/usuariosComuns');
+        }
+        
+      
+        $endereco=Endereco::find($user->endereco_id);
+        return view('usuariosComuns.editar',compact('user','endereco'));
     }
 
     /**
@@ -113,13 +135,29 @@ class usuarioComumController extends Controller
      */
     public function update(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $user=User::find($request->user_id);
+        $endereco=Endereco::find($user->endereco_id);
+        $complemento=null;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $endereco->update($dadosEndereco);
+        $endereco->save();
 
-        $request->user()->save();
+        $user->update(
+            $request->only(['name' ,
+            'email', 
+            'password' ,            
+            'data_nascimento', 
+            'CPF',
+            'numero_telefone'
+            ]
+            )
+        );
+         $user->save();
+         return redirect('/usuariosComuns');
     }
 
     /**

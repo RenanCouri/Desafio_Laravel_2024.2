@@ -75,8 +75,8 @@
           <div class=row > 
             <p class="col-sm-6">número:        <span>{{$endereco->numero_predial}}</span> </p>
             <p class="col-sm-6">complemento: 
-            @if($endereco->complemento!==null)
-                   <span>{{$endereco->complemento}}</span> 
+            @if($endereco->completemento!==null)
+                   <span>{{$endereco->completemento}}</span> 
             
             @else
                -

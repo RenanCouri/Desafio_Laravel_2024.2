@@ -21,7 +21,15 @@ Route::get('/administradores',[adminController::class,'index']);
 Route::get('/verAdministrador/{admId}',[adminController::class,'show']);
 Route::get('/criarAdministrador',[adminController::class,'create']);
 Route::post('/criarAdministrador',[adminController::class,'store']);
+Route::get('/editarUsuarioComum/{userId}',[usuarioComumController::class,'edit']);
+Route::post('/editarUsuarioComum',[usuarioComumController::class,'update']);
+Route::get('/editarGerente/{gerenteId}',[gerenteController::class,'edit']);
+Route::post('/editarGerente',[gerenteController::class,'update']);
+Route::get('/editarAdministrador/{admId}',[adminController::class,'edit']);
+Route::post('/editarAdministrador',[adminController::class,'update']);
 Route::post('/excluirUsuarioComum',[usuarioComumController::class,'destroy']);
+Route::post('/excluirGerente',[gerenteController::class,'destroy']);
+Route::post('/excluirAdministrador',[adminController::class,'destroy']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

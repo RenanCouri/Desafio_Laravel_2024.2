@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Conta;
 use App\Models\Endereco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class gerenteController extends Controller
@@ -55,6 +56,7 @@ class gerenteController extends Controller
         $dadosConta['user_id']=$user->id;
         $dadosConta['saldo']=0;
         Conta::create($dadosConta);
+        return redirect('/gerentes');
     }
 
     /**
@@ -76,24 +78,72 @@ class gerenteController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(Request $request,int $gerenteId)
     {
-        //
+        $user=User::find($gerenteId);
+        $atual=$request->user();
+        $user=User::find($gerenteId);
+            if($user===null || $user->cargo !== 'gerente')
+                return redirect('/gerentes');
+            if($atual->cargo==='gerente' && !$atual->getGerentes()->contains($user))
+               return redirect('/gerentes');
+       
+        $endereco=Endereco::find($user->endereco_id);
+        return view('gerentes.editar',compact('user','endereco'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
-        //
+        $user=User::find($request->user_id);
+        $endereco=Endereco::find($user->endereco_id);
+        $complemento=null;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
+
+        $endereco->update($dadosEndereco);
+        $endereco->save();
+
+        $user->update(
+            $request->only(['name' ,
+            'email', 
+            'password' ,            
+            'data_nascimento', 
+            'CPF',
+            'numero_telefone'
+            ]
+            )
+        );
+         $user->save();
+         return redirect('/gerentes');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user,Request $request)
     {
-        //
+        $user = User::find($request->user_id);
+        
+        $atual= $request->user();
+        $redr = $atual->id==$request->user_id;
+     
+        $conta=$user->conta;
+        $conta->delete();
+        $user->delete();
+
+        
+
+        if($redr){
+         Auth::logout();
+          return Redirect::to('/');
+          $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        }  
+        return Redirect::to('/gerentes');
     }
 }

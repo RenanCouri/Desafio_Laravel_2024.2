@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\Endereco;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class adminController extends Controller
 {
@@ -48,6 +50,7 @@ class adminController extends Controller
         ];
   
         $controller->store($request,$extras);
+        return redirect('/administradores');
     }
 
     /**
@@ -68,9 +71,17 @@ class adminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(int $admId,Request $request)
     {
-        //
+        $atual=$request->user();
+        $user=User::find($admId);
+            if( $user===null|| $user->cargo!=='administrador')
+               return redirect('/administrador');
+    
+        $endereco=Endereco::find($user->endereco_id);
+        
+      
+        return view('administradores.editar',compact('user','endereco'));
     }
 
     /**
@@ -78,14 +89,52 @@ class adminController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user=User::find($request->user_id);
+        $endereco=Endereco::find($user->endereco_id);
+        $complemento=null;
+        if($request->hasAny('completemento'))
+           $complemento=$request->completemento;
+        $dadosEndereco = $request->only(['pais','estado','cidade','bairro','rua','numero_predial']);
+        $dadosEndereco['completemento']=$complemento;
+
+        $endereco->update($dadosEndereco);
+        $endereco->save();
+
+        $user->update(
+            $request->only(['name' ,
+            'email', 
+            'password' ,            
+            'data_nascimento', 
+            'CPF',
+            'numero_telefone'
+            ]
+            )
+        );
+         $user->save();
+         return redirect('/administradores');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user,Request $request)
     {
-        //
+        $user = User::find($request->user_id);
+        
+        $atual= $request->user();
+        $redr = $atual->id==$request->user_id;
+
+        $user->delete();
+
+        
+
+        if($redr){
+         Auth::logout();
+         $request->session()->invalidate();
+        $request->session()->regenerateToken();
+          return Redirect::to('/');
+          
+        }  
+        return Redirect::to('/administradores');
     }
 }
