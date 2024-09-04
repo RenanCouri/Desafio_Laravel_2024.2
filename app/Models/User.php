@@ -63,6 +63,9 @@ class User extends Authenticatable
    public function endereco(){
     return $this->belongsTo(Conta::class);
    }
+   public function pendencias(){
+    return $this->hasMany(Pendencia::class);
+   }
    public function getUsuariosComuns(){
     $users=$this->users;
     $gerentes=[];

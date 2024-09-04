@@ -15,4 +15,7 @@ class Pendencia extends Model
     public function emprestimo(){
         return $this->belongsTo(Emprestimo::class,'emprestimo_id');
     }
+    public function user(){
+        return $this->belongsTo(User::class,'autoridade_id');
+    }
 }

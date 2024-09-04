@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Emprestimo extends Model
 {
     use HasFactory;
-    protected $fillable = ['valor','taxa_juros_mensal','data_limite'];
+    protected $guarded = [];
     public function Pendencia(){
         return $this->hasOne(Pendencia::class);
+    }
+    public function conta(){
+        return $this->belongsTo(Conta::class);
     }
 }

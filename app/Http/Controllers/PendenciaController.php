@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Emprestimo;
 use App\Models\Pendencia;
+use App\Models\Transacao;
 use Illuminate\Http\Request;
 
 class PendenciaController extends Controller
@@ -10,9 +12,9 @@ class PendenciaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(int $userId)
+    public function index(Request $request)
     {
-        $pendencias= Pendencia::query()->orderBy('created_at')->get();
+        $pendencias= $request->user()->pendeciasNaoResolvidas();
         return view('pendencias.index',compact('pendencias'));
     }
 
@@ -22,6 +24,35 @@ class PendenciaController extends Controller
     public function create()
     {
         //
+    }
+    public function acao(Request $request)
+    {
+        $pendencia=Pendencia::find($request->id);
+        if($pendencia!==null && !$pendencia->esta_resolvida){
+            $pendencia->foi_aprovado=$request->aprovado;
+            $pendencia->save();
+            $transferencia=Transacao::find($pendencia->transacao_id);
+            $emprestimo=Emprestimo::find($pendencia->emprestimo_id);
+            if($request->aprovado){
+             if($pendencia->tipo==='transferencia'){
+                (New TransacaoController())->realizarTransferenciaPendente($transferencia);
+             }
+             else{
+                (New EmprestimoController())->efetuar($emprestimo);
+             }
+        }
+        else{
+                if($pendencia->tipo==='transferencia'){
+                   
+                }
+                else{
+                  
+                   $emprestimo->esta_pendente=false;
+                   $emprestimo->foi_aprovado=true;
+                  
+                }   
+        }
+        }
     }
 
     /**

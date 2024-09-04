@@ -15,6 +15,9 @@ class Conta extends Model
     public function transacoes(){
         return $this->hasMany(Transacao::class);
     }
+    public function emprestimos(){
+        return $this->hasMany(Transacao::class);
+    }
     public function sacar($valor){
         if($valor<0 || $valor> $this->saldo)
            return false;
@@ -29,4 +32,19 @@ class Conta extends Model
         $this->save();
         return true;
     }
+    public function getEmprestimosNaoPagosOuPendentes()
+    {
+        $emprestimos=$this->emprestimos;
+        $naoPago=null;
+        foreach($emprestimos as $emprestimo)
+        {
+            if($emprestimo->esta_pendente ||($emprestimo->foi_aprovado && $emprestimo->qtd_a_pagar>0) )
+            {
+               $naoPago=$emprestimo;
+               break;
+            }   
+        }
+        return $naoPago;
+    }
+
 }

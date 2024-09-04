@@ -16,7 +16,7 @@ class TransacaoController extends Controller
     public function index(Request $request)
     {
         $user=$request->user();
-        $transacoes=$user->conta->transacoes;
+        $transacoes=$user->conta->transacoesSelecionadas();
         return view('transacoes.index',compact('transacoes'));
     }
 
@@ -97,13 +97,12 @@ class TransacaoController extends Controller
         }
         return redirect()->back();
     }
-    public function reailzarTransferenciaPendente(Request $request){
-        $transacao=Transacao::find($request->transacao_id);
-        if($transacao===null || $request->user()->id!= $transacao->autoridade_id)
-           return redirect()->back();
-        $transacao->esta_prendente=false;
-        $this->transferir(Conta::find($transacao->conta_remetente_id),Conta::find($transacao->conta_destinatario_id),$request->valor);
-        return redirect()->back();
+    public function realizarTransferenciaPendente(Transacao $transferencia){
+        
+        if($transferencia===null )
+           return null;
+        $transferencia->esta_prendente=false;
+        $this->transferir(Conta::find($transferencia->conta_remetente_id),Conta::find($transferencia->conta_destinatario_id),$transferencia->valor);
         
     }
     private function transferir(Conta $contaRem, Conta $contaDes, int $valor){
