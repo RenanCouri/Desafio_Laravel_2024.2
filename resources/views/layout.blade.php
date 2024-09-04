@@ -11,7 +11,7 @@
 
     <main>
     <div  style="text-align:center">
-            <h1 class="display-4" >@yield('titulo')</h1>
+            <h1 class="display-2" style="font-weight:bold; margin-bottom:35px;" >@yield('titulo')</h1>
             <p class="lead">@yield('paragrafoIntroducao')</p>
                    
         </div>

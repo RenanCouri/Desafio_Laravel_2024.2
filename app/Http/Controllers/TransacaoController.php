@@ -7,6 +7,7 @@ use App\Models\Pendencia;
 use App\Models\Transacao;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class TransacaoController extends Controller
 {
@@ -17,7 +18,18 @@ class TransacaoController extends Controller
     {
         $user=$request->user();
         $transacoes=$user->conta->transacoesSelecionadas();
-        return view('transacoes.index',compact('transacoes'));
+        $remententes=$destinatarios=[];
+        foreach($transacoes as $transacao){
+            if($transacao->tipo!='transferencia'){
+                   $remetentes[]=$destinatarios[]=$user->name;
+            }
+            else{
+               $remetentes[]=User::find(Conta::find($transacao->conta_remetente_id)->user_id)->name;
+               $destinatarios[]=User::find(Conta::find($transacao->conta_destinatario_id)->user_id)->name;
+            }
+        }
+        $saldo=round($user->conta->saldo,2);
+        return view('transacoes.index',compact('transacoes','remetentes','destinatarios','saldo'));
     }
 
     /**
@@ -28,40 +40,42 @@ class TransacaoController extends Controller
         return view('transacoes.transferencia');
     }
     public function saque_deposito(){
-        return view('transacao.saque_deposito');
+        return view('transacoes.saque_deposito');
     }
-    public function sacar(Request $request)
-    {
+    public function sacar_ou_depositar(Request $request){
         $dados=$request->only(['valor']);
-
-        $conta=Conta::query()->where('numero_conta',$request->numero_conta)->get()[0];
+        $conta=Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0];
         $atual=$request->user();
+        if($conta===null || $request->senha_alvo!==$conta->senha)
+           return redirect()->back(200);
         if($atual->cargo==='gerente' && !($atual->id!=$conta->user_id || !$atual->getUsuariosComuns()->contains(User::find($conta->id))))
-           return redirect()->back();
+           return redirect()->back(100);
         $dados['autoridade_id']=$atual->id;
-        if($conta->sacar($request->valor)){
         $dados['conta_destinatario_id']=$dados['conta_remetente_id']=$conta->id;
-        $dados['tipo']='saque';
         $dados['esta_pendente']=false;
+        if($request->tipo==='saque')
+           return $this->sacar($conta,$dados);
+        else
+          return $this->depositar($conta,$dados);
+    }
+    public function sacar(Conta $conta,$dados)
+    {
+        if($conta->sacar($dados['valor'])){
+        $dados['tipo']='saque';
+
         
-           $transacao= Transacao::create([$dados]);
-           $conta->saldo-=$request->valor;
+           $transacao= Transacao::create($dados);
+           
         }   
         return redirect()->back();
     }
-    public function depositar(Request $request)
+    public function depositar(Conta $conta,$dados)
     {
-        $dados=$request->only(['valor']);
-        $conta=Conta::query()->where('numero_conta',$request->numero_conta)->get()[0];
-        $atual=$request->user();
-        if($conta!=null && $conta->depositar($request->valor)){
-            if($atual->cargo==='gerente' && !($atual->id!=$conta->user_id || !$atual->getUsuariosComuns()->contains(User::find($conta->id))))
-            return redirect()->back();
-         $dados['autoridade_id']=$atual->id;
-        $dados['conta_destinatario_id']=$dados['conta_remetente_id']=$conta->id;
+        if($conta->depositar($dados['valor'])){
+       
         $dados['tipo']='deposito';
-        $dados['esta_pendente']=false;
-        Transacao::create([$dados]);
+   
+        Transacao::create($dados);
         
          
         
@@ -69,17 +83,19 @@ class TransacaoController extends Controller
        return redirect()->back();
     }
     public function requerirTransferencia(Request $request){
-
+        
         $dados=$request->only(['valor']);
         $dados['tipo']='transferencia';
         $dados['esta_pendente']=true;
-        $contaRem=Conta::find($request->user()->conta);
-        $contaDes=Conta::query()->where('numero_conta',$request->numero_conta)->get()[0];
+        $contaRem=$request->user()->conta;
+        if($request->senha_alvo!==$contaRem->senha)
+          return redirect()->back();
+        $contaDes=Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0];
         $dados['conta_destinatario_id']=$contaDes->id;
         $dados['conta_remetente_id']=$contaRem->id;
         if($contaRem->saldo>=$request->valor && $request->valor>0)
         {
-           $transacao= Transacao::create([$dados]);
+           $transacao= Transacao::create($dados);
            if($contaRem->limite_transferencias<$request->valor)
            {
             Pendencia::create(['titulo'=>'Valor de Transferência excede os limites',
@@ -91,7 +107,8 @@ class TransacaoController extends Controller
             ]);
            }
            else{
-            $transacao->esta_prendente=false;
+            $transacao->esta_pendente=false;
+            $transacao->save();
             $this->transferir($contaRem,$contaDes,$request->valor);
             }
         }
@@ -101,7 +118,8 @@ class TransacaoController extends Controller
         
         if($transferencia===null )
            return null;
-        $transferencia->esta_prendente=false;
+        $transferencia->esta_pendente=false;
+        $transferencia->save();
         $this->transferir(Conta::find($transferencia->conta_remetente_id),Conta::find($transferencia->conta_destinatario_id),$transferencia->valor);
         
     }

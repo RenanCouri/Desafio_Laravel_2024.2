@@ -21,14 +21,18 @@ class Conta extends Model
     public function sacar($valor){
         if($valor<0 || $valor> $this->saldo)
            return false;
+       
         $this->saldo-=$valor;
+       
         $this->save();
         return true;
     }
     public function depositar($valor){
         if($valor<0)
            return false;
+        
         $this->saldo+=$valor;
+        
         $this->save();
         return true;
     }
@@ -45,6 +49,16 @@ class Conta extends Model
             }   
         }
         return $naoPago;
+    }
+    public function transacoesSelecionadas(){
+        $transacoes=$this->transacoes;
+        $selecionadas=[];
+        foreach($transacoes as $transacao)
+        {
+           if(!$transacao->esta_pendente)
+              $selecionadas[]=$transacao;
+        }
+        return $selecionadas;
     }
 
 }

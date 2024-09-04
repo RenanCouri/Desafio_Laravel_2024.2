@@ -3,6 +3,7 @@
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\gerenteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransacaoController;
 use App\Http\Controllers\usuarioComumController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,10 @@ Route::post('/editarAdministrador',[adminController::class,'update']);
 Route::post('/excluirUsuarioComum',[usuarioComumController::class,'destroy']);
 Route::post('/excluirGerente',[gerenteController::class,'destroy']);
 Route::post('/excluirAdministrador',[adminController::class,'destroy']);
+Route::get('/saque_deposito',[TransacaoController::class,'saque_deposito']);
+Route::post('/saque_deposito',[TransacaoController::class,'sacar_ou_depositar']);
+Route::get('/transferencia',[TransacaoController::class,'transferencia']);
+Route::post('/transferencia',[TransacaoController::class,'requerirTransferencia']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
