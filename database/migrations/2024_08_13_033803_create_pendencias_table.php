@@ -17,10 +17,14 @@ return new class extends Migration
             $table->string('titulo');
             $table->boolean('foi_resolvida');
             $table->enum('tipo',['transferencia','emprestimo']);
+
             $table->unsignedBigInteger('emprestimo_id')->nullable();
             $table->foreign('transacao_id')->references('id')->on('transacoes');
             $table->unsignedBigInteger('transacao_id')->nullable();
             $table->foreign('emprestimo_id')->references('id')->on('emprestimos');
+            
+            $table->unsignedBigInteger('autoridade_id')->nullable();
+            $table->foreign('autoridade_id')->references('id')->on('users')->nullOnDelete();
         });
     }
 
