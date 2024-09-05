@@ -30,8 +30,8 @@ Pendências
     @csrf
     <input type="hidden" name="id" value="{{$pendencia->id}}">
     <select class="form-select mt-3"  name="aprovado" id="aprovado">
-        <option class="" value="true">Aprovar</option>
-        <option class="" value="false">Negar</option>
+        <option type="number" value="1">Aprovar</option>
+        <option type="number" value="0">Negar</option>
     </select>
     <button class="btn btn-primary mt-3">Confirmar</button>
   </form>

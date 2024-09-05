@@ -16,7 +16,7 @@ class Conta extends Model
         return $this->hasMany(Transacao::class);
     }
     public function emprestimos(){
-        return $this->hasMany(Transacao::class);
+        return $this->hasMany(Emprestimo::class);
     }
     public function sacar($valor){
         if($valor<0 || $valor> $this->saldo)
@@ -42,8 +42,9 @@ class Conta extends Model
         $naoPago=null;
         foreach($emprestimos as $emprestimo)
         {
-            if($emprestimo->esta_pendente ||($emprestimo->foi_aprovado && $emprestimo->qtd_a_pagar>0) )
+            if($emprestimo->esta_pendente ||($emprestimo->foi_aprovado && $emprestimo->quantidade_a_pagar>0) )
             {
+                
                $naoPago=$emprestimo;
                break;
             }   

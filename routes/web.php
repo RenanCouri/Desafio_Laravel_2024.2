@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\EmprestimoController;
 use App\Http\Controllers\gerenteController;
 use App\Http\Controllers\PendenciaController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +39,8 @@ Route::get('/transferencia',[TransacaoController::class,'transferencia']);
 Route::post('/transferencia',[TransacaoController::class,'requerirTransferencia']);
 Route::get('/pendencias',[PendenciaController::class,'index']);
 Route::post('/pendencias',[PendenciaController::class,'acao']);
+Route::get('/emprestimo',[EmprestimoController::class,'index']);
+Route::post('/emprestimo',[EmprestimoController::class,'solicitacao']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

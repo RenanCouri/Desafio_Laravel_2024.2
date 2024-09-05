@@ -30,30 +30,32 @@ class PendenciaController extends Controller
         $pendencia=Pendencia::find($request->id);
         
         if($pendencia!==null && !$pendencia->foi_resolvida){
-            dd($pendencia);
-            $pendencia->foi_resolvida=true;
-            $pendencia->save();
+          
+            
             $transferencia=Transacao::find($pendencia->transacao_id);
             $emprestimo=Emprestimo::find($pendencia->emprestimo_id);
-            if($request->aprovado){
-             if($pendencia->tipo==='transferencia'){
+            
+            if($request->aprovado == 1){
+              if($pendencia->tipo==='transferencia'){
                 (New TransacaoController())->realizarTransferenciaPendente($transferencia);
              }
              else{
                 (New EmprestimoController())->efetuar($emprestimo);
              }
-        }
-        else{
-                if($pendencia->tipo==='transferencia'){
+             }
+             if( $request->aprovado == 0)
+             {
+              
+                if($pendencia->tipo==='emprestimo'){
+                    $emprestimo->esta_pendente=false;
+                   $emprestimo->foi_aprovado=false;
+                   $emprestimo->save();
                    
-                }
-                else{
+                  }
                   
-                   $emprestimo->esta_pendente=false;
-                   $emprestimo->foi_aprovado=true;
-                  
-                }   
-        }
+              }
+        $pendencia->foi_resolvida=true;
+            $pendencia->save();
         }
         return redirect('/pendencias');
     }

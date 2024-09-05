@@ -23,7 +23,7 @@ return new class extends Migration
             $table->dateTime('data_pagamento')->nullable();
             $table->unsignedBigInteger('conta_id');
              $table->foreign('conta_id')->references('id')->on('contas');
-            $table->unsignedBigInteger('transacao_id');
+            $table->unsignedBigInteger('transacao_id')->nullable()->default(null);
             $table->foreign('transacao_id')->references('id')->on('transacoes');
         });
     }

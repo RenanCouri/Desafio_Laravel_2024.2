@@ -26,51 +26,59 @@ class EmprestimoController extends Controller
      */
     public function solicitacao(Request $request)
     {
+        if($request->hasAny('valor_a_pagar'))
+           return $this->pagamento($request);
         if($request->user()->conta->senha===$request->senha
-        && $request->user()->contaconta->getEmprestimosNaoPagosOuPendentes()===null){
+        && $request->user()->conta->getEmprestimosNaoPagosOuPendentes()===null){
               $emprestimo = Emprestimo::create(['valor'=> $request->valor,
-                 'esta_pendente'=>false,
+                 'esta_pendente'=>true,
                  'foi_aprovado'=>null,
                  'quantidade_a_pagar'=>$request->valor,
-                 'conta_id'=>$request->user()->id 
+                 'conta_id'=>$request->user()->conta->id
         ]);
               Pendencia::create([
                 'titulo'=> 'Pedido de empréstimo',
-                'for_resolvida'=>false,
+                'foi_resolvida'=>false,
                 'tipo'=>'emprestimo',
                 'autoridade_id'=>$request->user()->usuario_responsavel_id,
                 'emprestimo_id'=>$emprestimo->id
               ]
               );
         }
+        return redirect('/emprestimo');
     }
     public function efetuar(Emprestimo $emprestimo)
     {
                 $emprestimo->esta_pendente=false;
                 $emprestimo->foi_aprovado=true;
-                $emprestimo->qtd_a_pagar=$emprestimo->valor;
+                
+                $emprestimo->quantidade_a_pagar=$emprestimo->valor;
+                $emprestimo->save();
                 $conta=Conta::find($emprestimo->conta_id);
                 $conta->depositar($emprestimo->valor);
-                $emprestimo->save();
+                
     }
     public function pagamento(Request $request){
         $emprestimo=Emprestimo::find($request->emprestimo_id);
         $conta = $request->user()->conta;
-        if($emprestimo ===null || !$emprestimo->foi_aprovado || $emprestimo->qtd_a_pagar>0 || $emprestimo->conta_id!==$conta->id || $request->pagamento>$emprestimo->valor_a_pagar)
+        if($conta->senha!=$request->senha|| $emprestimo ===null || !$emprestimo->foi_aprovado || $emprestimo->quantidade_a_pagar==0 || $emprestimo->conta_id!==$conta->id || $request->valor_a_pagar>$emprestimo->quantidade_a_pagar)
            return redirect()->back();
 
-        if(!$conta->sacar($request->pagamento))
+        if(!$conta->sacar($request->valor_a_pagar))
            return redirect()->back();
-        $emprestimo->qtd_a_pagar-=$request->pagamento;
-        if($emprestimo->qtd_a_pagar==0)
-           $emprestimo->data_pagamento=now()->format('d-m-Y');
-        $emprestimo->save();
-        Transacao::create(['valor'=> $request->pagamento,
-        'tipo'=>'pagamento_de_emprestimo',
+        $emprestimo->quantidade_a_pagar-=$request->valor_a_pagar;
+  
+        if($emprestimo->quantidade_a_pagar==0)
+           $emprestimo->data_pagamento=now();
+        ;
+        Transacao::create(['valor'=> $request->valor_a_pagar,
+        'tipo'=>'pagamento_emprestimo',
         'esta_pendente'=>false,
         'conta_remetente_id'=>$conta->id,
         'conta_destinatario_id'=>$conta->id,
         'autoridade_id'=>$request->user()->usuario_responsavel_id]);
+        $emprestimo->save();
+        return redirect('/emprestimo');
     }
     /**
      * Store a newly created resource in storage.
