@@ -93,6 +93,7 @@ class TransacaoController extends Controller
         $contaDes=Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0];
         $dados['conta_destinatario_id']=$contaDes->id;
         $dados['conta_remetente_id']=$contaRem->id;
+    
         if($contaRem->saldo>=$request->valor && $request->valor>0)
         {
            $transacao= Transacao::create($dados);
@@ -102,7 +103,8 @@ class TransacaoController extends Controller
                                 'tipo'=>'transferencia',
                                 'foi_resolvida'=>false,
                                 'transacao_id'=>$transacao->id,
-                                'emprestimo_id'=>false
+                                'emprestimo_id'=>null,
+                                'autoridade_id'=>$request->user()->usuario_responsavel_id
 
             ]);
            }

@@ -93,7 +93,7 @@ class usuarioComumController extends Controller
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
                 return redirect('/usuariosComuns');
-            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user) )
+            if($atual->cargo==='gerente' && !in_array($user,$atual->getUsuariosComuns()) )
             return redirect('/usuariosComuns');
         }
         $endereco=Endereco::find($user->endereco_id);

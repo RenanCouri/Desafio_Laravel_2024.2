@@ -52,10 +52,10 @@ class User extends Authenticatable
         ];
     }
    public function users(){
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class,'usuario_responsavel_id');
    }
    public function user(){
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class,'usuario_responsavel_id');
    }
    public function conta(){
     return $this->hasOne(Conta::class,"user_id");
@@ -64,18 +64,28 @@ class User extends Authenticatable
     return $this->belongsTo(Conta::class);
    }
    public function pendencias(){
-    return $this->hasMany(Pendencia::class);
+    return $this->hasMany(Pendencia::class,"autoridade_id");
    }
    public function getUsuariosComuns(){
     $users=$this->users;
-    $gerentes=[];
+    $usuariosComuns=[];
     foreach($users as $user){
         if($user->cargo=='usuario_comum')
            $usuariosComuns[]=$user;
     }
-    
+    return $usuariosComuns;
     
    }
+   public function getPendenciasNaoResolvidas(){
+    $pendencias=$this->pendencias;
+   
+    $naoResolvidas=[];
+    foreach ($pendencias as $pendencia){
+        if(!$pendencia->foi_resolvida)
+           $naoResolvidas[]=$pendencia;
+    }
+    return $naoResolvidas;
+}
    public function getGerentes(){
     $users=$this->users;
     $gerentes=[];

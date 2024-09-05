@@ -14,7 +14,7 @@ class PendenciaController extends Controller
      */
     public function index(Request $request)
     {
-        $pendencias= $request->user()->pendeciasNaoResolvidas();
+        $pendencias= $request->user()->getPendenciasNaoResolvidas();
         return view('pendencias.index',compact('pendencias'));
     }
 
@@ -28,8 +28,10 @@ class PendenciaController extends Controller
     public function acao(Request $request)
     {
         $pendencia=Pendencia::find($request->id);
-        if($pendencia!==null && !$pendencia->esta_resolvida){
-            $pendencia->foi_aprovado=$request->aprovado;
+        
+        if($pendencia!==null && !$pendencia->foi_resolvida){
+            dd($pendencia);
+            $pendencia->foi_resolvida=true;
             $pendencia->save();
             $transferencia=Transacao::find($pendencia->transacao_id);
             $emprestimo=Emprestimo::find($pendencia->emprestimo_id);
@@ -53,6 +55,7 @@ class PendenciaController extends Controller
                 }   
         }
         }
+        return redirect('/pendencias');
     }
 
     /**
