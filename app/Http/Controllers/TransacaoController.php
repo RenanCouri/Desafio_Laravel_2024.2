@@ -18,18 +18,9 @@ class TransacaoController extends Controller
     {
         $user=$request->user();
         $transacoes=$user->conta->transacoesSelecionadas();
-        $remententes=$destinatarios=[];
-        foreach($transacoes as $transacao){
-            if($transacao->tipo!='transferencia'){
-                   $remetentes[]=$destinatarios[]=$user->name;
-            }
-            else{
-               $remetentes[]=User::find(Conta::find($transacao->conta_remetente_id)->user_id)->name;
-               $destinatarios[]=User::find(Conta::find($transacao->conta_destinatario_id)->user_id)->name;
-            }
-        }
-        $saldo=round($user->conta->saldo,2);
-        return view('transacoes.index',compact('transacoes','remetentes','destinatarios','saldo'));
+
+       $conta=$user->conta;
+        return view('transacoes.index',compact('transacoes','conta'));
     }
 
     /**

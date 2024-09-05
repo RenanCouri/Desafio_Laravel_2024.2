@@ -41,6 +41,7 @@ Route::get('/pendencias',[PendenciaController::class,'index']);
 Route::post('/pendencias',[PendenciaController::class,'acao']);
 Route::get('/emprestimo',[EmprestimoController::class,'index']);
 Route::post('/emprestimo',[EmprestimoController::class,'solicitacao']);
+Route::get('/extrato',[TransacaoController::class,'index']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

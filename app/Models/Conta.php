@@ -13,7 +13,7 @@ class Conta extends Model
         return $this->belongsTo(User::class);
     }
     public function transacoes(){
-        return $this->hasMany(Transacao::class);
+        return $this->hasMany(Transacao::class,'conta_remetente_id');
     }
     public function emprestimos(){
         return $this->hasMany(Emprestimo::class);
@@ -52,7 +52,8 @@ class Conta extends Model
         return $naoPago;
     }
     public function transacoesSelecionadas(){
-        $transacoes=$this->transacoes;
+        $transacoes=Transacao::query()->where('conta_remetente_id',$this->id)->orWhere('conta_destinatario_id',$this->id)->get();
+       
         $selecionadas=[];
         foreach($transacoes as $transacao)
         {
