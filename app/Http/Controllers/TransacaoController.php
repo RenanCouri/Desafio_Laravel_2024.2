@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaqueDepositoRequest;
+use App\Http\Requests\TransferenciaRequest;
 use App\Models\Conta;
 use App\Models\Pendencia;
 use App\Models\Transacao;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 class TransacaoController extends Controller
 {
@@ -33,14 +36,17 @@ class TransacaoController extends Controller
     public function saque_deposito(){
         return view('transacoes.saque_deposito');
     }
-    public function sacar_ou_depositar(Request $request){
+    public function sacar_ou_depositar(SaqueDepositoRequest $request){
         $dados=$request->only(['valor']);
         $conta=Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0];
         $atual=$request->user();
         if($conta===null || $request->senha_alvo!==$conta->senha)
-           return redirect()->back(200);
-        if($atual->cargo==='gerente' && !($atual->id!=$conta->user_id || !$atual->getUsuariosComuns()->contains(User::find($conta->id))))
-           return redirect()->back(100);
+           return redirect('/saque_deposito')->withErrors('Conta não encontrada. Verifique-se de que os dados estão corretos');
+        if( $atual->cargo==='gerente' && !($atual->id!=$conta->user_id || !$atual->getUsuariosComuns()->contains(User::find($conta->id))))
+           return redirect('/saque_deposito')->withErrors('Você não tem permissão para fazer saques ou depósitos nessa conta');
+        
+        if(!Hash::check($request->senha_agente,$request->user()->password))
+           return redirect('/saque_deposito')->withErrors('Crendenciais de cadastro inválidas');
         $dados['autoridade_id']=$atual->id;
         $dados['conta_destinatario_id']=$dados['conta_remetente_id']=$conta->id;
         $dados['esta_pendente']=false;
@@ -56,9 +62,12 @@ class TransacaoController extends Controller
 
         
            $transacao= Transacao::create($dados);
-           
+           return redirect('saque_deposito')->with('sucesso','Operação realizada com sucesso');
         }   
-        return redirect()->back();
+        else{
+           return redirect('saque_deposito')->withErrors('Valor de saque é maior que o saldo disponível na conta');
+        }
+        
     }
     public function depositar(Conta $conta,$dados)
     {
@@ -71,25 +80,28 @@ class TransacaoController extends Controller
          
         
        }
-       return redirect()->back();
+       return redirect('saque_deposito')->with('sucesso','Operação realizada com sucesso');
     }
-    public function requerirTransferencia(Request $request){
+    public function requerirTransferencia(TransferenciaRequest $request){
         
         $dados=$request->only(['valor']);
         $dados['tipo']='transferencia';
         $dados['esta_pendente']=true;
         $contaRem=$request->user()->conta;
         if($request->senha_alvo!==$contaRem->senha)
-          return redirect()->back();
+          return redirect('/transferencia')->withErrors('Dados da conta não estão corretos');
         $contaDes=Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0];
         $dados['conta_destinatario_id']=$contaDes->id;
         $dados['conta_remetente_id']=$contaRem->id;
     
-        if($contaRem->saldo>=$request->valor && $request->valor>0)
+        if($contaRem->saldo>=$request->valor )
         {
+            $mensagem="";
            $transacao= Transacao::create($dados);
            if($contaRem->limite_transferencias<$request->valor)
            {
+            $mensagem="Valor de transferência excede o limite. Ficará a cargo do gerente responsável aprová-la ou nâo. 
+            Estes são os dados de contato: \nemail:{$request->user()->usuario_responsavel->email}\ttelefone:{$request->user()->usuario_responsavel->numero_telefone}";
             Pendencia::create(['titulo'=>'Valor de Transferência excede os limites',
                                 'tipo'=>'transferencia',
                                 'foi_resolvida'=>false,
@@ -100,12 +112,14 @@ class TransacaoController extends Controller
             ]);
            }
            else{
+            $mensagem="Transferência realizada com sucesso";
             $transacao->esta_pendente=false;
             $transacao->save();
             $this->transferir($contaRem,$contaDes,$request->valor);
             }
+            return redirect('/transferencia')->with('sucesso',$mensagem);
         }
-        return redirect()->back();
+        return redirect('/transferencia')->withErrors('Valor de transferência excede o saldo da conta');
     }
     public function realizarTransferenciaPendente(Transacao $transferencia){
         

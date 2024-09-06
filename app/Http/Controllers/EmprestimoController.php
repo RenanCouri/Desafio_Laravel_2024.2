@@ -59,13 +59,16 @@ class EmprestimoController extends Controller
                 
     }
     public function pagamento(Request $request){
-        $emprestimo=Emprestimo::find($request->emprestimo_id);
         $conta = $request->user()->conta;
-        if($conta->senha!=$request->senha|| $emprestimo ===null || !$emprestimo->foi_aprovado || $emprestimo->quantidade_a_pagar==0 || $emprestimo->conta_id!==$conta->id || $request->valor_a_pagar>$emprestimo->quantidade_a_pagar)
-           return redirect()->back();
-
+        $emprestimo=$conta->getEmprestimosNaoPagosOuPendentes();
+        
+        if($conta->senha!=$request->senha )
+           return redirect('/emprestimo')->withErrors('Dados da conta não estão corretos');
+        if( $request->valor_a_pagar>$emprestimo->quantidade_a_pagar){
+            return redirect('/emprestimo')->withErrors('Valor de pagamento excede a dívida existente');
+        }
         if(!$conta->sacar($request->valor_a_pagar))
-           return redirect()->back();
+           return redirect('/emprestimo')->withErros('Valor de pagamento é maior que o saldo da conta');
         $emprestimo->quantidade_a_pagar-=$request->valor_a_pagar;
   
         if($emprestimo->quantidade_a_pagar==0)
@@ -78,7 +81,8 @@ class EmprestimoController extends Controller
         'conta_destinatario_id'=>$conta->id,
         'autoridade_id'=>$request->user()->usuario_responsavel_id]);
         $emprestimo->save();
-        return redirect('/emprestimo');
+        return redirect('/emprestimo')->with('sucesso',"Empréstimo solicitado com sucesso!\n
+        Dados de contato do gerente responsável: \nemail:{$request->user()->usuario_responsavel->email}\ttelefone:{$request->user()->usuario_responsavel->numero_telefone}");
     }
     /**
      * Store a newly created resource in storage.

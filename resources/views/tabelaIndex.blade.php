@@ -1,6 +1,7 @@
 @extends('layout')
 
 @section('conteudo')
+
      @if($permissao)
     <div class="d-flex p-3 justify-content-end">
         <a href="{{'/criar'}}@yield('nome_pagina')"><button class="btn btn-primary">Cadastrar Novo</button></a>
@@ -16,6 +17,12 @@
             </tr>
         </thead>
         <tbody>
+            @if(isset($admCriador) && $admCriador!==null)
+                   <td>{{$admCriador->name}}(Aquele que o cadastrou)</td>
+                   <td>{{$admCriador->email}}</td>
+                   <td>{{$admCriador->CPF}}</td>
+                   <td>Nenhuma ação disponível</td>
+            @endif       
             @foreach($users as $user)
               <tr class="table-row">
                    <td>{{$user->name}}</td>

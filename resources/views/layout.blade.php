@@ -13,7 +13,21 @@
     <div  style="text-align:center">
             <h1 class="display-2" style="font-weight:bold; margin-bottom:35px;" >@yield('titulo')</h1>
             <p class="lead">@yield('paragrafoIntroducao')</p>
-                   
+    </div>
+    @if(session('sucesso') !== null)
+    <div class="alert alert-success">
+         {{session('sucesso')}}    
+</div>    
+@endif
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif           
         </div>
         @yield('conteudo')
         </div>

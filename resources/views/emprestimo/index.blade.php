@@ -19,7 +19,7 @@ Seção de Empréstimo
     <input type="number" class="form-control" name="valor" id="valor" required>
 </div>
 @else
-<h3 class="mb-3">Você tem um empréstimo a pagar. Quitê-o para poder realizar novos: </h3>
+<h3 class="mb-3">Você tem um empréstimo a pagar. Quite-o para poder realizar novos: </h3>
 <div class="my-2"><span style="font-weight:bold">Divida atual : </span>R$ {{number_format($emprestimo->quantidade_a_pagar,2,',','')}}</div>
 <input type="hidden" value="{{$emprestimo->id}}" name="emprestimo_id">
 <div class="form-group"  style="min-width:80px;width:35%;">
