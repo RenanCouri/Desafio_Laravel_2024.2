@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use App\Models\Conta;
 use App\Models\Endereco;
@@ -56,7 +57,9 @@ class gerenteController extends Controller
         $dadosConta['user_id']=$user->id;
         $dadosConta['saldo']=0;
         Conta::create($dadosConta);
-        return redirect('/gerentes');
+        
+        return redirect('/gerentes')->with('sucesso','cadastro realizado com sucesso');
+    
     }
 
     /**
@@ -76,7 +79,7 @@ class gerenteController extends Controller
         {
             $user=User::find($gerenteId);
             if($user===null || $user->cargo !== 'gerente')
-                return redirect('/gerentes');
+                return redirect('/gerentes')->withErrors('Gerente não encontrado');
             
         }
         
@@ -104,7 +107,7 @@ class gerenteController extends Controller
         {
             $user=User::find($gerenteId);
             if($user===null || $user->cargo !== 'gerente')
-                return redirect('/gerentes');
+                return redirect('/gerentes')->withErrors('Gerente não encontrado');
             
         }
         $endereco=Endereco::find($user->endereco_id);
@@ -114,9 +117,10 @@ class gerenteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request)
     {
         $user=User::find($request->user_id);
+        
         $endereco=Endereco::find($user->endereco_id);
         $complemento=null;
         if($request->hasAny('completemento'))
@@ -138,7 +142,7 @@ class gerenteController extends Controller
             )
         );
          $user->save();
-         return redirect('/gerentes');
+         return redirect('/gerentes')->with('sucesso','atualização realizada com sucesso');
     }
 
     /**
@@ -151,7 +155,7 @@ class gerenteController extends Controller
         if($atual->cargo==='gerente')
            {
             if($atual->id!==$gerenteId)
-              return redirect("/gerentes");
+              return redirect("/gerentes")->withErrors('Esse gerente não pode ser acessado por você');
             else
                $user=$atual;
            }
@@ -159,7 +163,7 @@ class gerenteController extends Controller
         {
             $user=User::find($gerenteId);
             if($user===null || $user->cargo !== 'gerente')
-                return redirect('/gerentes');
+                return redirect('/gerentes')->withErrors('Gerente não encontrado');
             
         }
         
@@ -176,6 +180,6 @@ class gerenteController extends Controller
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
-        return Redirect::to('/gerentes');
+        return redirect('/gerentes')->with('sucesso','exclusão realizado com sucesso');
     }
 }

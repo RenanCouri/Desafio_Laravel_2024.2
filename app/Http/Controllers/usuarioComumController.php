@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use App\Models\Conta;
 use App\Models\Endereco;
@@ -72,7 +73,7 @@ class usuarioComumController extends Controller
         $dadosConta['user_id']=$user->id;
         $dadosConta['saldo']=0;
         Conta::create($dadosConta);
-        return redirect('/usuariosComuns');
+        return redirect('/usuariosComuns')->with('sucesso','cadastro realizado com sucesso');
       }
 
     /**
@@ -80,6 +81,7 @@ class usuarioComumController extends Controller
      */
     public function show(int $userId,Request $request)
     {
+       
         $atual=$request->user();
         if($atual->cargo==='usuario_comum')
            {
@@ -92,9 +94,9 @@ class usuarioComumController extends Controller
         {
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
-                return redirect('/usuariosComuns');
+                return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');
             if($atual->cargo==='gerente' && !in_array($user,$atual->getUsuariosComuns()) )
-            return redirect('/usuariosComuns');
+              return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
         }
         $endereco=Endereco::find($user->endereco_id);
         $conta=$user->conta;
@@ -120,9 +122,9 @@ class usuarioComumController extends Controller
         {
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
-                return redirect('/usuariosComuns');
+                return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');;
             if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
-               return redirect('/usuariosComuns');
+               return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
         }
         
       
@@ -133,8 +135,10 @@ class usuarioComumController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request)
     {
+        
+        
         $user=User::find($request->user_id);
         $endereco=Endereco::find($user->endereco_id);
         $complemento=null;
@@ -157,7 +161,7 @@ class usuarioComumController extends Controller
             )
         );
          $user->save();
-         return redirect('/usuariosComuns');
+         return redirect('/usuariosComuns')->with('sucesso','atualização realizada com sucesso');
     }
 
     /**
@@ -179,15 +183,18 @@ class usuarioComumController extends Controller
         {
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
-                return redirect('/usuariosComuns');
+                return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');
             if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
-               return redirect('/usuariosComuns');
+               return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
+            
         }
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
+        $endereco=$user->id;
         $conta->delete();
         $user->delete();
+        $endereco->delete();
 
         
 
@@ -197,7 +204,7 @@ class usuarioComumController extends Controller
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
-        return Redirect::to('/usuariosComuns');
+        return redirect('/usuariosComuns')->with('sucesso','exclusão realizada com sucesso');;
 
     }
 }

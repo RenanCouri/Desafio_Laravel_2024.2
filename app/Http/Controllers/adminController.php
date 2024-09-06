@@ -14,11 +14,13 @@ class adminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users=User::query()->where('cargo','administrador')->get();
+        $responsavelId=$request->user()->usuario_responsavel_id;
+        $admCriador=User::find($responsavelId);
+        $users=User::query()->where('cargo','administrador')->whereNot('id',$responsavelId)->get();
         $permissao=true;
-        return view('administradores.index',compact('users','permissao'));
+        return view('administradores.index',compact('users','permissao','admCriador'));
     }
 
     /**
@@ -61,8 +63,9 @@ class adminController extends Controller
         $atual=$request->user();
         $user=User::find($admId);
             if( $user!==null && $user->cargo!=='administrador')
-               return redirect('/administradores');
-    
+               return redirect('/administradores')->withErrors('Administrador não encontrado');
+            if($user->id===$atual->usuario_responsavel_id)
+             return redirect('/administradores')->withErrors('Você não tem permissão para realizar qualquer ação a esse administrador');
         $endereco=Endereco::find($user->endereco_id);
       
         return view('administradores.ver',compact('user','endereco'));
