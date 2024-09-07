@@ -24,9 +24,7 @@ class UserPolicy
         if($model===null || $model->cargo!=='usuario_comum')
             return Response::denyAsNotFound('usuario comum não encontrado');
            
-        return (($user->id===$model->id)
-        ||$user->cargo==='administrador'
-        ||( $user->cargo==='gerente'&&in_array($model,$user->getUsuariosComuns()) ))
+        return (($user->id===$model->id)||$user->cargo==='administrador'||( $user->cargo==='gerente'&&in_array($model,$user->getUsuariosComuns()) ))
                 ? Response::allow()
                 : Response::deny('Você não tem permissão de agir sobre o cadastro dele');
     }

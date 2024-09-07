@@ -38,7 +38,7 @@ class adminController extends Controller
     public function store(Request $request)
     {
         $controller= new RegisteredUserController();
-      
+        $foto=$request->file('foto')->store('imagens');
         
         $complemento=null;
         if($request->hasAny('completemento'))

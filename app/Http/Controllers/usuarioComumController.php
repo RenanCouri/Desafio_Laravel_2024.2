@@ -42,9 +42,12 @@ class usuarioComumController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('usuariosComuns.criar');
+      $gerentes=null;
+      if($request->user()->cargo==='administrador')
+          $gerentes = User::query()->where('cargo','gerente')->get();
+      return view('usuariosComuns.criar',compact('gerentes'));
     }
 
     /**
@@ -115,7 +118,7 @@ class usuarioComumController extends Controller
         if($atual->cargo==='usuario_comum')
            {
             if($atual->id!==$userId)
-              return redirect("/verUsuarioComum/$atual->id");
+              return redirect("/editarUsuarioComum/$atual->id");
             else
                $user=$atual;
            }
@@ -127,10 +130,14 @@ class usuarioComumController extends Controller
             if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
                return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
         }
+        $egrentes=null;
+        if($atual->cargo==='administrador'){
+           $gerentes=User::query()->where('cargo','gerente')->whereNot('id',$user->usuario_responsavel_id)->get();
+        }
         
       
         $endereco=Endereco::find($user->endereco_id);
-        return view('usuariosComuns.editar',compact('user','endereco'));
+        return view('usuariosComuns.editar',compact('user','endereco','gerentes'));
     }
 
     /**
@@ -198,7 +205,7 @@ class usuarioComumController extends Controller
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
-        $endereco=$user->id;
+        $endereco=$user->endereco;
         $conta->delete();
         $user->delete();
         $endereco->delete();

@@ -21,5 +21,7 @@ Criar Usuário
 @section('retorno')
 usuariosComuns
 @endsection
-
+@section('opcao')
+(opcional)
+@endsection
 

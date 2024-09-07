@@ -10,7 +10,7 @@ Depósito e Saque
 <form method="post"  style="margin:auto 2% 5% 2%;"  onsubmit="return confirm('Tem certeza que deseja realizar tal ação??')">
 @csrf  
 <h5>Informe o tipo de ação que deseja fazer: </h5>
-<select name="tipo" id="tipo">
+<select name="tipo"class="form-select mt-3" id="tipo">
             <option value="deposito">Depósito</option>
             <option value="saque">Saque</option>
         </select>

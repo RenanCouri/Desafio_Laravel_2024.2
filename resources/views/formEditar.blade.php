@@ -30,6 +30,17 @@
         <div class="form-group">
             <label for="data_nascimento">data de nascimento:</label>
        <input type="date" name="data_nascimento" value="{{$user->data_nascimento}}" id="data_nascimento" required class="form-control">
+       @if(isset($gerentes) && $gerentes!==null)
+            <div class="form-group">
+            <label for="usuario_responsavel_id">Gerente Responsável:</label>
+        <select name="usuario_responsavel_id" class="form-select mt-1" id="usuario_responsavel_id">
+        <option value="{{$user->usuario_responsavel_id}}" style="font-weight:semi-bold" selected>{{$user->usuario_responsavel->name}} <em>(Atual)</em></option>   
+        @foreach($gerentes as $gerente)
+            <option value="{{$gerente->id}}">{{$gerente->name}}</option>
+        @endforeach
+        </select>
+            </div>
+        @endif
         </div>
         <div class="form-group">
             <label for="pais">pais:</label>

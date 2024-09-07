@@ -31,6 +31,22 @@
        <input type="date" name="data_nascimento" id="data_nascimento" required class="form-control">
         </div>
         <div class="form-group">
+            <label for="foto" >Foto: @yield('opcao')</label>
+        <input type="file" value="" name="foto" class="form-control" >
+        </div>
+            @if(isset($gerentes) && $gerentes!==null)
+            <div class="form-group">
+            <label for="usuario_responsavel_id">Gerente Responsável:</label>
+        <select name="usuario_responsavel_id" class="form-select mt-1" id="usuario_responsavel_id">
+            @foreach($gerentes as $gerente)
+            <option value="{{$gerente->id}}">{{$gerente->name}}</option>
+            @endforeach
+        
+        </select>
+        </div>
+        @endif
+        
+        <div class="form-group">
             <label for="pais">pais:</label>
             <input type="text" name="pais" id="pais" required class="form-control">
             <label for="estado">estado:</label>

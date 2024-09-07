@@ -41,14 +41,16 @@ class RegisteredUserController extends Controller
             'data_nascimento' =>['date_format:Y-m-d','required',"after:1899-12-31","before:today"],
             'numero_cpf'=>['required','string','size:14'],
             'numero_telefone'=>['required','numeric','digits:12'],
-            'foto' => [Rule::requiredIf($terFoto),'extensions:jpg,png'],
+            'foto' => [Rule::requiredIf($terFoto)],
             'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador' || $terFoto),Rule::requiredIf(!$terFoto && $request->user()->cargo==='administrador'),'numeric','gte:1']
             
         ]);
-        
         $foto=null;
-        if($request->hasFile('foto'))
-           $foto=$request->foto;
+        dd($request->hasFile('foto'));
+        
+        if($request->hasFile('foto')){
+            $foto=$request->file('foto')->store('imagens');
+        }
         $request->usuario_responsavel_id ? $userResp=$request->usuario_responsavel_id : ( $extras['cargo'] !== 'gerente' ? $userResp=$request->user()->id : $userResp=1);
         $dados=[
             'name' => $request->name,
@@ -59,7 +61,7 @@ class RegisteredUserController extends Controller
             'numero_telefone' => $request->numero_telefone,
             'usuario_responsavel_id' => $userResp,
             'foto' => $foto,
-            'endereco_id' => 2,
+            'endereco_id' => $extras['endereco_id'],
             'cargo' => $extras['cargo']
         ]; 
         //dd($dados);

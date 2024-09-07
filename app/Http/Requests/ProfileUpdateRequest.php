@@ -14,13 +14,13 @@ class ProfileUpdateRequest extends FormRequest
     public function authorize(Request $request): bool
     {
         if($request->route()->uri === "editarUsuarioComum"){
-          return $request->user()->can('acaoUsuarioComum',$request->user_id) ;
+          return $request->user()->can('acaoUsuarioComum',[User::class, $request->user_id]) ;
         }
         else if($request->route()->uri === "editarGerente"){
-            return $request->user()->can('acaoGerente',$request->user_id) ;
+            return $request->user()->can('acaoGerente',[User::class, $request->user_id]) ;
           }
         else {
-            return $request->user()->can('acaoAdministrador',$request->user_id) ;
+            return $request->user()->can('acaoAdministrador',[User::class, $request->user_id]) ;
         }
     }
     /**
@@ -38,7 +38,7 @@ class ProfileUpdateRequest extends FormRequest
             'data_nascimento' =>['date_format:Y-m-d','required',"after:1899-12-31","before:today"],
             'numero_cpf'=>['required','string','size:14'],
             'numero_telefone'=>['required','numeric','digits:12'],
-            'foto' => [Rule::requiredIf($terFoto),'extensions:jpg,png'],
+            'foto' => [Rule::requiredIf($terFoto)],
             'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador' || $terFoto),Rule::requiredIf(!$terFoto && $request->user()->cargo==='administrador'),'numeric','gte:1']
         ];
     }
