@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Pendencia;
+use App\Policies\PendenciaPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,8 @@ class PendenciaRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->cargo==='gerente';
+        
+        return $request->user()->can('acaoPendencia',Pendencia::find($request->pendencia_id)) ;
     }
 
     /**

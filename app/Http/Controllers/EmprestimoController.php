@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmprestimoRequest;
 use App\Models\Conta;
 use App\Models\Emprestimo;
 use App\Models\Pendencia;
@@ -24,7 +25,7 @@ class EmprestimoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function solicitacao(Request $request)
+    public function solicitacao(EmprestimoRequest $request)
     {
         if($request->hasAny('valor_a_pagar'))
            return $this->pagamento($request);
@@ -58,7 +59,7 @@ class EmprestimoController extends Controller
                 $conta->depositar($emprestimo->valor);
                 
     }
-    public function pagamento(Request $request){
+    public function pagamento(EmprestimoRequest $request){
         $conta = $request->user()->conta;
         $emprestimo=$conta->getEmprestimosNaoPagosOuPendentes();
         

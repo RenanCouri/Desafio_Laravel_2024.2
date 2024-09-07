@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Conta;
 use App\Models\Transacao;
 use DateTime;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class SaqueDepositoRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->cargo!=='usuario_comum';
+        return $request->user()->can('saqueDeposito',Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0]);
     }
 
     public function rules(): array

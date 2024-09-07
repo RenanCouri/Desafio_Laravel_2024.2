@@ -27,8 +27,8 @@ class EnderecoRequest extends FormRequest
             'cidade'=>['required','string','max:70'],
             'bairro'=>['required','string','max:70'],
             'rua'=>['required','string','max:100'],
-            'numero_predial'=>['required','numeric','max:12'],
-            'completemento'=>['numeric','max:12']
+            'numero_predial'=>['required','numeric','max_digits:12'],
+            'completemento'=>['numeric','max_digits:12']
         ];
     }
 }

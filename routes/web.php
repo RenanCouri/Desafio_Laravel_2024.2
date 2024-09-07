@@ -34,7 +34,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/verAdministrador/{admId}', [adminController::class, 'show'])->can('acaoAdministrador', [User::class, 'admId']);
     Route::get('/criarAdministrador', [adminController::class, 'create'])->can('createAdministrador', User::class);
     Route::post('/criarAdministrador', [adminController::class, 'store']);
-    
     Route::post('/editarUsuarioComum', [usuarioComumController::class, 'update']);
     Route::get('/editarGerente/{gerenteId}', [gerenteController::class, 'edit'])->can('acaoGerente', [User::class, 'gerenteId']);
     Route::post('/editarGerente', [gerenteController::class, 'update']);
@@ -47,10 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/saque_deposito', [TransacaoController::class, 'sacar_ou_depositar']);
     Route::get('/transferencia', [TransacaoController::class, 'transferencia']);
     Route::post('/transferencia', [TransacaoController::class, 'requerirTransferencia']);
-    Route::get('/pendencias', [PendenciaController::class, 'index']);
+    Route::get('/pendencias', [PendenciaController::class, 'index'])->can('paginaPendencias');
     Route::post('/pendencias', [PendenciaController::class, 'acao']);
-    Route::get('/emprestimo', [EmprestimoController::class, 'index']);
-    Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']);
+    Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo');
+    Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']) ;
     Route::get('/extrato', [TransacaoController::class, 'index']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PendenciaRequest;
 use App\Models\Emprestimo;
 use App\Models\Pendencia;
 use App\Models\Transacao;
@@ -25,10 +26,11 @@ class PendenciaController extends Controller
     {
         //
     }
-    public function acao(Request $request)
+    public function acao(PendenciaRequest $request)
     {
         $pendencia=Pendencia::find($request->id);
-        
+        if($pendencia->foi_resolvida)
+          return redirect('/pendencias')->withErrors('Você não pode alterar uma pendência já resolvida');
         if($pendencia!==null && !$pendencia->foi_resolvida){
           
             

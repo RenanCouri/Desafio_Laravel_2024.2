@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-
+use App\Models\Conta;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class TransferenciaRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->cargo!=='administrador';
+        return $request->user()->can('requerirTransferencia',Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0]);
     }
 
     /**

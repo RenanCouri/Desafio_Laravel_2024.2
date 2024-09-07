@@ -12,7 +12,7 @@ class EmprestimoRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->cargo!=='administrador';
+        return $request->user()->can('paginaEmprestimo');
     }
 
     /**
@@ -24,7 +24,9 @@ class EmprestimoRequest extends FormRequest
     {
         return [
             'valor'=>['gt:0','numeric'],
-            'valor_a_pagar'=>['exclude_if:valor,required','gt:0','numeric']
+            'valor_a_pagar'=>['exclude_if:valor,required','exclude_unless:valor,prohibited','gt:0','numeric'],
+            'senha'=>['required','numeric','digits:6']
+
         ];
     }
 }

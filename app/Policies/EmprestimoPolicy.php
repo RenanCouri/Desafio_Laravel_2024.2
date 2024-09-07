@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Endereco;
+use App\Models\Emprestimo;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class EnderecoPolicy
+class EmprestimoPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class EnderecoPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Endereco $endereco): bool
+    public function view(User $user, Emprestimo $emprestimo): bool
     {
         //
     }
@@ -27,15 +27,17 @@ class EnderecoPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function acessarEmprestimo(User $user): Response
     {
-        //
+        return $user->cargo!=='administrador'
+        ?Response::allow()
+        :Response::deny('Você não pode acessar a página de empréstimos como administrador');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Endereco $endereco): bool
+    public function update(User $user, Emprestimo $emprestimo)
     {
         //
     }
@@ -43,7 +45,7 @@ class EnderecoPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Endereco $endereco): bool
+    public function delete(User $user, Emprestimo $emprestimo): bool
     {
         //
     }
@@ -51,7 +53,7 @@ class EnderecoPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Endereco $endereco): bool
+    public function restore(User $user, Emprestimo $emprestimo): bool
     {
         //
     }
@@ -59,7 +61,7 @@ class EnderecoPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Endereco $endereco): bool
+    public function forceDelete(User $user, Emprestimo $emprestimo): bool
     {
         //
     }

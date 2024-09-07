@@ -11,12 +11,24 @@ use Illuminate\Validation\Rules;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    public function authorize(Request $request): bool
+    {
+        if($request->route()->uri === "editarUsuarioComum"){
+          return $request->user()->can('acaoUsuarioComum',$request->user_id) ;
+        }
+        else if($request->route()->uri === "editarGerente"){
+            return $request->user()->can('acaoGerente',$request->user_id) ;
+          }
+        else {
+            return $request->user()->can('acaoAdministrador',$request->user_id) ;
+        }
+    }
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-
+    
     public function rules(EnderecoRequest $request): array
     {
         $terFoto=($request->route()->uri !== "editarUsuarioComum");
