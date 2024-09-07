@@ -26,11 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/criarUsuarioComum', [usuarioComumController::class, 'store']);
     Route::get('/verUsuarioComum/{userId}', [usuarioComumController::class, 'show'])->can('acaoUsuarioComum', [User::class, 'userId']);
     Route::get('/editarUsuarioComum/{userId}', [usuarioComumController::class, 'edit'])->can('acaoUsuarioComum', [User::class, 'userId']);
-    Route::get('/gerentes', [gerenteController::class, 'index'])->can('createGerente', User::class);
+    Route::get('/gerentes', [gerenteController::class, 'index'])->can('paginaGerente', User::class);
     Route::get('/criarGerente', [gerenteController::class, 'create'])->can('createGerente', User::class);
     Route::get('/verGerente/{gerenteId}', [gerenteController::class, 'show'])->can('acaoGerente', [User::class, 'gerenteId']);
     Route::post('/criarGerente', [gerenteController::class, 'store']);
-    Route::get('/administradores', [adminController::class, 'index'])->can('acaoGerente', [User::class, 'gerenteId']);
+    Route::get('/administradores', [adminController::class, 'index'])->can('paginaAdministrador', User::class);
     Route::get('/verAdministrador/{admId}', [adminController::class, 'show'])->can('acaoAdministrador', [User::class, 'admId']);
     Route::get('/criarAdministrador', [adminController::class, 'create'])->can('createAdministrador', User::class);
     Route::post('/criarAdministrador', [adminController::class, 'store']);
