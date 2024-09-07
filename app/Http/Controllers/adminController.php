@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Endereco;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -90,7 +91,7 @@ class adminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(ProfileUpdateRequest $request, User $user)
     {
         $user=User::find($request->user_id);
         $endereco=Endereco::find($user->endereco_id);
@@ -120,7 +121,7 @@ class adminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user,Request $request)
+    public function destroy(Request $request)
     {
         $user = User::find($request->user_id);
         

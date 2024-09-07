@@ -16,8 +16,8 @@ class ProfileUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public $terFoto=true;
-    public function rules(Request $request): array
+
+    public function rules(EnderecoRequest $request): array
     {
         $terFoto=($request->route()->uri !== "editarUsuarioComum");
         return [
@@ -27,7 +27,7 @@ class ProfileUpdateRequest extends FormRequest
             'numero_cpf'=>['required','string','size:14'],
             'numero_telefone'=>['required','numeric','digits:12'],
             'foto' => [Rule::requiredIf($terFoto),'extensions:jpg,png'],
-            'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador'),'numeric','gte:1']
+            'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador' || $terFoto),Rule::requiredIf(!$terFoto && $request->user()->cargo==='administrador'),'numeric','gte:1']
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\EnderecoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use App\Models\Conta;
@@ -49,7 +50,7 @@ class usuarioComumController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EnderecoRequest $request)
     {
            
         $controller= new RegisteredUserController();
@@ -122,7 +123,7 @@ class usuarioComumController extends Controller
         {
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
-                return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');;
+                return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');
             if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
                return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
         }
@@ -138,8 +139,16 @@ class usuarioComumController extends Controller
     public function update(ProfileUpdateRequest $request)
     {
         
-        
+      
         $user=User::find($request->user_id);
+        $respId=$user->usuario_responsavel_id;
+        if($request->usuario_responsavel_id!==null){
+         $userResp=User::find($request->usuario_responsavel_id);
+         if($userResp===null || $userResp->cargo!=='gerente')
+            return redirect('/usuariosComuns')->withErrors('Dados de gerente responsável inválidos passados'); 
+         else
+           $respId=$userResp->id; 
+      } 
         $endereco=Endereco::find($user->endereco_id);
         $complemento=null;
         if($request->hasAny('completemento'))
@@ -149,17 +158,15 @@ class usuarioComumController extends Controller
 
         $endereco->update($dadosEndereco);
         $endereco->save();
-
-        $user->update(
-            $request->only(['name' ,
-            'email', 
-            'password' ,            
-            'data_nascimento', 
-            'CPF',
-            'numero_telefone'
-            ]
-            )
-        );
+        $dadosUser=$request->only(['name' ,
+        'email', 
+        'password' ,            
+        'data_nascimento', 
+        'CPF',
+        'numero_telefone'
+        ]);
+        $dadosUser['usuario_responsavel_id']=$respId;
+        $user->update($dadosUser);
          $user->save();
          return redirect('/usuariosComuns')->with('sucesso','atualização realizada com sucesso');
     }
@@ -204,7 +211,7 @@ class usuarioComumController extends Controller
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
-        return redirect('/usuariosComuns')->with('sucesso','exclusão realizada com sucesso');;
+        return redirect('/usuariosComuns')->with('sucesso','exclusão realizada com sucesso');
 
     }
 }

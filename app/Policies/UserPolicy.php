@@ -21,18 +21,21 @@ class UserPolicy
     public function acaoUsuarioComum(User $user, int $model): Response
     {
         $model=User::find($model);
-        return $model!==null && $model->cargo==='usuario_comum'
-        &&(($user->id===$model->id)
+        if($model===null || $model->cargo!=='usuario_comum')
+            return Response::denyAsNotFound('usuario comum não encontrado');
+           
+        return (($user->id===$model->id)
         ||$user->cargo==='administrador'
         ||( $user->cargo==='gerente'&&in_array($model,$user->getUsuariosComuns()) ))
                 ? Response::allow()
-                : Response::deny('Esse usuário comum não existe ou você não tem permissão de agir sobre o cadastro dele');
+                : Response::deny('Você não tem permissão de agir sobre o cadastro dele');
     }
     public function acaoGerente(User $user, int $model): Response
     {
         $model=User::find($model);
-        return $model!==null && $model->cargo==='gerente'
-        &&($user->id===$model->id)
+        if($model===null || $model->cargo!=='gerente')
+            return Response::denyAsNotFound('Gerente não encontrado');
+        return ($user->id===$model->id)
         ||$user->cargo==='administrador'
         
                 ? Response::allow()
@@ -41,8 +44,9 @@ class UserPolicy
     public function acaoAdministrador(User $user, int $model): Response
     {
         $model=User::find($model);
-        return $model!==null && $model->cargo==='administrador'
-        &&$user->cargo==='administrador'
+        if($model===null || $model->cargo!=='administrador')
+            return Response::denyAsNotFound('Administrador não encontrado');
+        return $user->cargo==='administrador'
         &&($user->usuario_responsavel_id!==$model->id)
         
         
@@ -59,11 +63,23 @@ class UserPolicy
         ? Response::allow()
                 : Response::deny('Você não pode cadastrar usuarios comuns.');
     }
+    public function paginaGerente(User $user): Response
+    {
+        return $user->cargo!=='usuario_comum'
+        ? Response::allow()
+                : Response::deny('Você não pode acessar a página de gerentes.');
+    }
     public function createGerente(User $user): Response
     {
         return $user->cargo!=='usuario_comum'
                 ? Response::allow()
                 : Response::deny('Você não pode cadastrar gerentes.');
+    }
+    public function paginaAdministrador(User $user): Response
+    {
+        return $user->cargo==='administrador'
+        ? Response::allow()
+                : Response::deny('Você não pode acessar a página de administradores.');
     }
     public function createAdministrador(User $user): Response
     {
