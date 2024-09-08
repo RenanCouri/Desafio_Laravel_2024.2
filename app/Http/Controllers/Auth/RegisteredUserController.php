@@ -41,12 +41,11 @@ class RegisteredUserController extends Controller
             'data_nascimento' =>['date_format:Y-m-d','required',"after:1899-12-31","before:today"],
             'numero_cpf'=>['required','string','size:14'],
             'numero_telefone'=>['required','numeric','digits:12'],
-            'foto' => [Rule::requiredIf($terFoto)],
+            'foto' => [Rule::requiredIf($terFoto),'extensions:png,jpg'],
             'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador' || $terFoto),Rule::requiredIf(!$terFoto && $request->user()->cargo==='administrador'),'numeric','gte:1']
             
         ]);
         $foto=null;
-        dd($request->hasFile('foto'));
         
         if($request->hasFile('foto')){
             $foto=$request->file('foto')->store('imagens');
@@ -64,7 +63,6 @@ class RegisteredUserController extends Controller
             'endereco_id' => $extras['endereco_id'],
             'cargo' => $extras['cargo']
         ]; 
-        //dd($dados);
         $user = User::create($dados);
         
         event(new Registered($user));

@@ -2,7 +2,7 @@
 
 @section('conteudo')
 <a href="{{'/'}}@yield('retorno')"><div class="btn btn-primary mb-2 mx-2"><--</div></a>
-<form method="post" action="{{'/editar'}}@yield('passarRota')"  style="margin:auto 2% 5% 2%;"  >
+<form method="post" action="{{'/editar'}}@yield('passarRota')"  style="margin:auto 2% 5% 2%;"  enctype="multipart/form-data">
 @csrf    
     <input type="hidden" name="user_id" value="{{$user->id}}">    
 <div class="form-group">
@@ -30,6 +30,10 @@
         <div class="form-group">
             <label for="data_nascimento">data de nascimento:</label>
        <input type="date" name="data_nascimento" value="{{$user->data_nascimento}}" id="data_nascimento" required class="form-control">
+       <div class="form-group">
+            <label for="foto" >Foto: @yield('opcao')</label>
+        <input type="file" name="foto" class="form-control" >
+        </div>
        @if(isset($gerentes) && $gerentes!==null)
             <div class="form-group">
             <label for="usuario_responsavel_id">Gerente Responsável:</label>

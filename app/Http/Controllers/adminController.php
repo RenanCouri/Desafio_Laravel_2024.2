@@ -103,16 +103,22 @@ class adminController extends Controller
 
         $endereco->update($dadosEndereco);
         $endereco->save();
-
+        $dadosUser=$request->only(['name' ,
+        'email', 
+        'password' ,            
+        'data_nascimento', 
+        'CPF',
+        'numero_telefone'
+        ]);
+        
+        $foto=null;
+        
+        if($request->hasFile('foto')){
+              $foto=$request->file('foto')->store('/imagens');
+              $dadosUser['foto']=$foto;
+        }   
         $user->update(
-            $request->only(['name' ,
-            'email', 
-            'password' ,            
-            'data_nascimento', 
-            'CPF',
-            'numero_telefone'
-            ]
-            )
+            $dadosUser
         );
          $user->save();
          return redirect('/administradores');

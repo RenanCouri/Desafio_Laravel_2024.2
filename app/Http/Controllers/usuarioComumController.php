@@ -173,6 +173,13 @@ class usuarioComumController extends Controller
         'numero_telefone'
         ]);
         $dadosUser['usuario_responsavel_id']=$respId;
+        $foto=null;
+        
+        if($request->hasFile('foto')){
+              $foto=$request->file('foto')->store('/imagens');
+              $dadosUser['foto']=$foto;
+        }
+        
         $user->update($dadosUser);
          $user->save();
          return redirect('/usuariosComuns')->with('sucesso','atualização realizada com sucesso');
@@ -205,7 +212,8 @@ class usuarioComumController extends Controller
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
-        $endereco=$user->endereco;
+
+        $endereco=Endereco::find($user->endereco_id);
         $conta->delete();
         $user->delete();
         $endereco->delete();

@@ -9,9 +9,7 @@
     main{
         background-color: rgb(220, 220, 220);
     }
-    div>div:nth-last-of-type(1){
-        border-bottom: 2px solid rgb(102,105,105);
-    }
+    
     
     html{
         background-color: rgb(220, 220, 220);
@@ -96,5 +94,14 @@
         </div>    
        
         @endif
+        <div>
+        <p >Imagem de perfil: 
+        @if($user->foto!==null)
+        </p>
+        <img style="size:fit-content ; max-width:20% ;margin:auto"src="http://localhost:8000/storage/{{ $user->foto }}">
+        @else
+           Não definida</p>
         </div>
+        </div>
+     @endif   
 @endsection
