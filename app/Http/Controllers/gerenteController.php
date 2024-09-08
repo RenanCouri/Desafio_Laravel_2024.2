@@ -10,6 +10,7 @@ use App\Models\Conta;
 use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
 class gerenteController extends Controller
@@ -96,6 +97,7 @@ class gerenteController extends Controller
      */
     public function edit(Request $request,int $gerenteId)
     {
+        
         $atual=$request->user();
         if($atual->cargo==='gerente')
            {
@@ -158,6 +160,7 @@ class gerenteController extends Controller
      */
     public function destroy(Request $request)
     {
+        Gate::authorize('acaoGerente', [User::class,$request->user_id]);
         $atual=$request->user();
         $gerenteId=$request->user_id;
         if($atual->cargo==='gerente')

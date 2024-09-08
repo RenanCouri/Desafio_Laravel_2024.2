@@ -10,6 +10,7 @@ use App\Models\Conta;
 use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
 class usuarioComumController extends Controller
@@ -190,6 +191,7 @@ class usuarioComumController extends Controller
      */
     public function destroy(Request $request)
     {
+      Gate::authorize('acaoGerente', [User::class,$request->user_id]);
         $userId=$request->user_id;
         $user=User::find($userId);
         $atual=$request->user();

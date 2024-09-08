@@ -44,13 +44,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/excluirAdministrador', [adminController::class, 'destroy']);
     Route::get('/saque_deposito', [TransacaoController::class, 'saque_deposito']);
     Route::post('/saque_deposito', [TransacaoController::class, 'sacar_ou_depositar']);
-    Route::get('/transferencia', [TransacaoController::class, 'transferencia']);
+    Route::get('/transferencia', [TransacaoController::class, 'transferencia'])->can('acessarExtrato');
     Route::post('/transferencia', [TransacaoController::class, 'requerirTransferencia']);
     Route::get('/pendencias', [PendenciaController::class, 'index'])->can('paginaPendencias');
     Route::post('/pendencias', [PendenciaController::class, 'acao']);
     Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo');
     Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']) ;
-    Route::get('/extrato', [TransacaoController::class, 'index']);
+    Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato');;
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

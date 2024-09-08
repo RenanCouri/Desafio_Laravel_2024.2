@@ -7,6 +7,7 @@ use App\Http\Requests\EnderecoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Endereco;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -130,6 +131,7 @@ class adminController extends Controller
      */
     public function destroy(Request $request)
     {
+        Gate::authorize('acaoAdministrador', [User::class,$request->user_id]);
         $user = User::find($request->user_id);
         
         $atual= $request->user();
