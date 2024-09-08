@@ -9,10 +9,10 @@ Pendências
 @if($pendencias===null|| sizeOf($pendencias)===0)
 <div class="alert alert-primary" style="text-align:center; width:fit-content; padding:15px; margin:auto auto">Você não tem pendências a serem resolvidas no momento</div>
 @else
-<ul style="list-style:none"class="list">
+<ul style="list-style:none"class="list-group">
     <li style="border-bottom: 1px solid blue"></li>
 @foreach($pendencias as $pendencia)
-<li class="list_element" style="border-bottom: 1px solid blue; padding:5px">
+<li class="list-group-item" style="border-bottom: 1px solid blue; padding:5px">
   <ul class="list-group">
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Titulo : </span>{{$pendencia->titulo}}</li>
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Usuário : </span><a href="/verUsuarioComum/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}">{{$pendencia->transacao->contaRem->user->name ?? $pendencia->emprestimo->conta->user->id}}</a></li>

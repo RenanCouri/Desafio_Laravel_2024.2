@@ -8,7 +8,11 @@
      @yield('adicoes_cabecalho')
 </head>
 <body>
-
+     <nav style="background-color:lightblue" class="navbar navbar-light p-3">
+         <div class="navbar-text">Navegação</div>
+        <a class="navbar-brand" href="/dashboard2">Dashboard</a>
+        <a class="navbar-brand" href="/usuariosComuns">Tabela Usuários Comuns</a>
+     </nav>
     <main>
     <div  style="text-align:center">
             <h1 class="display-2" style="font-weight:bold; margin-bottom:35px;" >@yield('titulo')</h1>

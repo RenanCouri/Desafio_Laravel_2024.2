@@ -54,6 +54,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/dashboard2',function(Request $request){
+        $texto="usuariosComuns.dashboard";
+        if($request->user()->cargo==='gerente')
+          $texto="gerentes.dashboard";
+        if($request->user()->cargo==='administrador')
+           $texto="administradores.dashboard";
+        return view($texto);
+    });
 });
 
 require __DIR__ . '/auth.php';

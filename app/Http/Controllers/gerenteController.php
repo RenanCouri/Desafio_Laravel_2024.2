@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\EnderecoRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use App\Models\Conta;
@@ -34,7 +35,7 @@ class gerenteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EnderecoRequest $request)
     {
         $controller= new RegisteredUserController();
       
