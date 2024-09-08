@@ -48,11 +48,19 @@
         <p class="col-sm-6">CPF:    <span>{{$user->CPF}}</span> </p>
             <p class="col-sm-6">Número de telefone:    <span>{{$user->numero_telefone}}</span> </p>
        
-        
-        
-            
-       
         </div>
+            @if($user->cargo === 'administrador')
+            <div class=row > 
+            <p class="col-sm-6">Administrador que o cadastrou:    <span>{{$user->usuario_responsavel->name}}</span> </p>
+            </div>
+            @endif
+            @if($user->cargo === 'usuario_comum')
+            <div class=row > 
+            <p class="col-sm-6">Gerente responsável:    <span>{{$user->usuario_responsavel->name}}</span> </p>
+            </div>
+            @endif
+       
+        
         <div class=row >
         <p class="col-sm-6">data de nascimento:     <span>{{$user->data_nascimento}}</span> </p>
             <p class="col-sm-6">país:     <span>{{$endereco->pais}}</span> </p>
@@ -88,7 +96,7 @@
             <p class="col-sm-6">conta:  <span> {{$conta->numero_conta}}</span></p>
         </div>
         <div class=row >     
-            <p class="col-sm-6">limite:   <span>{{$conta->limite_transferencias}}</span></p>
+            <p class="col-sm-6">limite:   <span>R$ {{$conta->limite_transferencias}}</span></p>
             
             <p class="col-sm-6">senha: <span> {{$conta->senha}}</span></p>
         </div>    

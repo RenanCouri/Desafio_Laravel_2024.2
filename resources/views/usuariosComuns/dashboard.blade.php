@@ -1,12 +1,16 @@
 @extends('dashboardLayout')
 @section('conteudo')
-<div>
-    <a href="/extrato">Extrato Bancário</a>
-</div>
-<div>
-    <a href="/transferencia">Realizar Transferência</a>
-</div>
-<div>
-    <a href="/emprestimos">Seção de empréstimos</a>
-</div>
+<li class="list-group-item">
+          
+        <a class="navbar-brand" href="/extrato">Extrato Bancário</a>
+</li>
+
+<li class="list-group-item">
+          
+          <a class="navbar-brand" href="/transferencias">Página de transferências</a>
+  </li>
+  <li class="list-group-item">
+          
+          <a class="navbar-brand" href="/emprestimo">Página de empréstimo</a>
+  </li>
 @endsection
