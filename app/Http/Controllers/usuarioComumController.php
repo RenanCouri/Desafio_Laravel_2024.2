@@ -193,7 +193,7 @@ class usuarioComumController extends Controller
      */
     public function destroy(Request $request)
     {
-      Gate::authorize('acaoGerente', [User::class,$request->user_id]);
+      Gate::authorize('acaoUsuarioComum', [User::class,$request->user_id]);
         $userId=$request->user_id;
         $user=User::find($userId);
         $atual=$request->user();
@@ -218,7 +218,8 @@ class usuarioComumController extends Controller
         $conta=$user->conta;
 
         $endereco=Endereco::find($user->endereco_id);
-        $conta->delete();
+        if($conta!==null)
+          $conta->delete();
         $user->delete();
         $endereco->delete();
 
