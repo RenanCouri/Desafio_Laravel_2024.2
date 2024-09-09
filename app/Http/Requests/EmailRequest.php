@@ -27,7 +27,7 @@ class EmailRequest extends FormRequest
         'required',
         'array',
           ],
-    'cargos_checagem.*' => Rule::in(['administrador', 'gerente','usuario_comum']),
+    'cargos_checagem.*' => Rule::in(['administrador','gerente','usuario_comum']),
     'titulo_email'=>['required','string','max:64'],
     'conteudo_email'=>['required','string','max:255']
         ];

@@ -17,13 +17,13 @@ Comunicação por e-mail
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="cargos_checagem[]" value="gerente" id="usuario_comum">
+            <input class="form-check-input" type="checkbox" name="cargos_checagem[]" value="gerente" id="gerente">
             <label class="form-check-label" for="gerente">
                 Gerentes
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="cargos_checagem[]" value="administador" id="usuario_comum">
+            <input class="form-check-input" type="checkbox" name="cargos_checagem[]" value="administrador" id="administrador">
             <label class="form-check-label" for="administrador">
                 Administradores
             </label>
