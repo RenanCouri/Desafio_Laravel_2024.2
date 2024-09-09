@@ -34,11 +34,9 @@ class EnviarEmailComunicacao implements ShouldQueue
         else
           $users=User::query()->where('cargo',$cargos[0])->get();
     $i=5;
-        var_dump($users);
     foreach($users as $user){
         
         $email= new MailComunicacao($dados);
-        var_dump($email);
        //Antigo jeito: (delay era feito no console) Mail::to($user)->queue($email); Implementaremos um novo:
        $quandoEnviar = now()->addSeconds($i);
        $i+=10;
