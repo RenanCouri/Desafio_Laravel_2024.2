@@ -15,6 +15,6 @@
   </li>
   <li class="list-group-item">
           
-          <a class="navbar-brand" href="/enviar_email">Página de para enviar e-mails</a>
+          <a class="navbar-brand" href="/comunicacao_email">Página de para enviar e-mails</a>
   </li>
 @endsection

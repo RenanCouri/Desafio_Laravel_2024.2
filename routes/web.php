@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\ComunicacaoController;
 use App\Http\Controllers\EmprestimoController;
 use App\Http\Controllers\gerenteController;
 use App\Http\Controllers\PendenciaController;
@@ -70,6 +71,8 @@ Route::middleware('auth')->group(function () {
         
         
     })->can('acessarExtrato',[Transacao::class]);
+    Route::get('/comunicacao_email',[ComunicacaoController::class,'index'])->can('paginaAdministrador', User::class);
+    Route::post('/comunicacao_email',[ComunicacaoController::class,'enviar'])->can('paginaAdministrador', User::class);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
