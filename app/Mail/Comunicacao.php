@@ -40,7 +40,7 @@ class Comunicacao extends Mailable
     public function content(): Content
     {
         return new Content(
-            text: $this->dados['conteudo'],
+            text: 'mails.comunicacao',
         );
     }
 

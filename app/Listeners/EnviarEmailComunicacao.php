@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class EnviarEmailComunicacao
+class EnviarEmailComunicacao implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -25,21 +25,24 @@ class EnviarEmailComunicacao
     public function handle(Comunicacao $event): void
     {
         $dados=$event->dados;
-        if(sizeof($dados)===3)
+
+        $cargos=$dados['cargos'];
+        if(sizeof($cargos)===3)
           $users= User::all();
-        else if(sizeof($dados)===2)
-         $users=User::query()->where('cargo',$dados[0])->orWhere('cargo',$dados[1]);
+        else if(sizeof($cargos)===2)
+         $users=User::query()->where('cargo',$cargos[0])->orWhere('cargo',$cargos[1])->get();
         else
-          $users=User::query()->where('cargo',$dados[0]);
-        
+          $users=User::query()->where('cargo',$cargos[0])->get();
     $i=5;
+        var_dump($users);
     foreach($users as $user){
         
         $email= new MailComunicacao($dados);
+        var_dump($email);
        //Antigo jeito: (delay era feito no console) Mail::to($user)->queue($email); Implementaremos um novo:
        $quandoEnviar = now()->addSeconds($i);
        $i+=10;
-       Mail::to($user)->later($quandoEnviar,$email);
+       Mail::to($user->email)->later($quandoEnviar,$email);
         //sleep(5); Funciona como um modelo síncrono. Portanto, não atende mais aos nossos interesses.
         //Queremos agora um modelo assíncrono, no qual o usuário do site não terá de esperar todas os email serem enviados para continuar fazendo suas terefas.
     }

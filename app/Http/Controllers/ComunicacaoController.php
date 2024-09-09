@@ -15,15 +15,20 @@ class ComunicacaoController extends Controller
     }
     public function enviar(Request $request)  {
         
-        $cargos=$request->cargosChecagem;
-        $users=[];
-        foreach($cargos as $cargo)
-          $users[$cargo]=User::query()->where('cargo',$cargo)->get();
+        $cargos=$request->cargos_checagem;
+        Mail::to('Email@em.com')->send(new Comunicacao(['nome'=>$request->user()->name,
+        'email'=>$request->user()->email,
+        'assunto'=>$request->titulo_email,
+        'conteudo'=>$request->conteudo_email,
+         'cargos'=>$cargos] ));
+         
         event(new EventsComunicacao(['nome'=>$request->user()->name,
         'email'=>$request->user()->email,
-        'assunto'=>$request->titulo,
-        'conteudo'=>$request->conteudo,
+        'assunto'=>$request->titulo_email,
+        'conteudo'=>$request->conteudo_email,
          'cargos'=>$cargos] ));
+
+         return redirect()->back();
     }
 
 }
