@@ -73,10 +73,11 @@ class usuarioComumController extends Controller
         ];
   
         $user=$controller->store($request,$extras);
-      
-        $dadosConta=$request->only(['numero_agencia','numero_conta','limite_transferencias','senha']);
+         
+        $dadosConta=gerarNumeroSenhaLimiteSaldo();
+        $dadosConta['numero_agencia']=gerarNumeroAgencia();
+        $dadosConta['numero']=gerarNumeroConta();
         $dadosConta['user_id']=$user->id;
-        $dadosConta['saldo']=0;
         Conta::create($dadosConta);
         return redirect('/usuariosComuns')->with('sucesso','cadastro realizado com sucesso');
       }

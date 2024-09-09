@@ -55,7 +55,7 @@ class adminController extends Controller
         ];
   
         $controller->store($request,$extras);
-        return redirect('/administradores');
+        return redirect('/administradores')->with('sucesso','Cadastro realizado com sucesso');
     }
 
     /**
@@ -123,7 +123,7 @@ class adminController extends Controller
             $dadosUser
         );
          $user->save();
-         return redirect('/administradores');
+         return redirect('/administradores')->with('sucesso','Atualização realizado com sucesso');
     }
 
     /**
@@ -148,6 +148,6 @@ class adminController extends Controller
           return Redirect::to('/');
           
         }  
-        return Redirect::to('/administradores');
+        return Redirect::to('/administradores')->with('sucesso','exclusão realizado com sucesso');
     }
 }
