@@ -29,8 +29,9 @@ class EmprestimoController extends Controller
     {
         if($request->hasAny('valor_a_pagar'))
            return $this->pagamento($request);
-        if($request->user()->conta->senha===$request->senha
-        && $request->user()->conta->getEmprestimosNaoPagosOuPendentes()===null){
+        if($request->user()->conta->senha!==$request->senha)
+           return redirect('/emprestimo')->withErrors('A senha está incorreta');
+        if( $request->user()->conta->getEmprestimosNaoPagosOuPendentes()===null){
               $emprestimo = Emprestimo::create(['valor'=> $request->valor,
                  'esta_pendente'=>true,
                  'foi_aprovado'=>null,
@@ -45,8 +46,10 @@ class EmprestimoController extends Controller
                 'emprestimo_id'=>$emprestimo->id
               ]
               );
+              return redirect('/emprestimo')->with('sucesso',"Empréstimo solicitado com sucesso!\n
+        Dados de contato do gerente responsável: \nemail:{$request->user()->usuario_responsavel->email}\ttelefone:{$request->user()->usuario_responsavel->numero_telefone}");
         }
-        return redirect('/emprestimo');
+        return redirect('/emprestimo')->withErrors('Você já tem empréstimos pendentes ou não pagos');
     }
     public function efetuar(Emprestimo $emprestimo)
     {
@@ -82,8 +85,7 @@ class EmprestimoController extends Controller
         'conta_destinatario_id'=>$conta->id,
         'autoridade_id'=>$request->user()->usuario_responsavel_id]);
         $emprestimo->save();
-        return redirect('/emprestimo')->with('sucesso',"Empréstimo solicitado com sucesso!\n
-        Dados de contato do gerente responsável: \nemail:{$request->user()->usuario_responsavel->email}\ttelefone:{$request->user()->usuario_responsavel->numero_telefone}");
+        return redirect('/emprestimo')->with('sucesso',"Transação de pagamento realizada com sucesso!");
     }
     /**
      * Store a newly created resource in storage.

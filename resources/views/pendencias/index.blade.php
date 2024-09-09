@@ -15,7 +15,7 @@ Pendências
 <li class="list-group-item" style="border-bottom: 1px solid blue; padding:5px">
   <ul class="list-group">
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Titulo : </span>{{$pendencia->titulo}}</li>
-  <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Usuário : </span><a href="/verUsuarioComum/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}">{{$pendencia->transacao->contaRem->user->name ?? $pendencia->emprestimo->conta->user->id}}</a></li>
+  <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Usuário : </span><a href="/verUsuarioComum/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}">{{$pendencia->transacao->contaRem->user->name ?? $pendencia->emprestimo->conta->user->name}}</a></li>
   @if($pendencia->tipo==='transferencia')
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Limite : </span>R$ {{number_format($pendencia->transacao->contaRem->limite_transferencias,2,',','')}}</li>
   @endif

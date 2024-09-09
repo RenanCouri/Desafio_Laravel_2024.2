@@ -52,9 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/saque_deposito', [TransacaoController::class, 'sacar_ou_depositar']);
     Route::get('/transferencia', [TransacaoController::class, 'transferencia'])->can('acessarExtrato',[Transacao::class]);
     Route::post('/transferencia', [TransacaoController::class, 'requerirTransferencia']);
-    Route::get('/pendencias', [PendenciaController::class, 'index'])->can('paginaPendencias',[Pendencia::class]);
+    Route::get('/pendencias', [PendenciaController::class, 'index'])->can('acessarPendencia',[Pendencia::class]);
     Route::post('/pendencias', [PendenciaController::class, 'acao']);
-    Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo',[Emprestimo::class]);
+    Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('acessarEmprestimo',[Emprestimo::class]);
     Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']) ;
     Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato',[Transacao::class]);
     Route::post('/pdf_extrato', function(PdfExtratoRequest $request){

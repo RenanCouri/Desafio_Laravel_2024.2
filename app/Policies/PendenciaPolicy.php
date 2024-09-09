@@ -29,7 +29,7 @@ class PendenciaPolicy
      */
     public function acessarPendencia(User $user): Response
     {
-        return $user->cargo==='gerente'
+        return $user->cargo=='gerente'
         ?Response::allow()
         :Response::deny('Você não tem permissão para acessar a página de pendências');
     }
@@ -37,7 +37,7 @@ class PendenciaPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function acaoPendencia(User $user, Pendencia $pendencia)
+    public function acaoPendencia(User $user, Pendencia $pendencia=null)
     {
         if($pendencia===null)
            return Response::denyAsNotFound('Pendência não encotrada');

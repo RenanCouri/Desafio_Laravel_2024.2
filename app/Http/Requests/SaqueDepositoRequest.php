@@ -19,7 +19,7 @@ class SaqueDepositoRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->can('saqueDeposito',Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0]);
+        return $request->user()->can('saqueDeposito',[Transacao::class,Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()[0]]);
     }
 
     public function rules(): array

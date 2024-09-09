@@ -15,7 +15,7 @@ class PendenciaRequest extends FormRequest
     public function authorize(Request $request): bool
     {
         
-        return $request->user()->can('acaoPendencia',Pendencia::find($request->pendencia_id)) ;
+        return $request->user()->can('acaoPendencia',[Pendencia::class,Pendencia::find($request->id)]) ;
     }
 
     /**
@@ -27,7 +27,7 @@ class PendenciaRequest extends FormRequest
     {
         return [
             'aprovado'=>['required','boolean'],
-            'pendencia_id'=>['required','numeric','gt:0']
+            'id'=>['required','numeric','gt:0']
         ];
     }
 }

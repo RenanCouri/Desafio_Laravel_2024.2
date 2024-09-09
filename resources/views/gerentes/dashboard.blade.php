@@ -14,7 +14,7 @@
   </li>
   <li class="list-group-item">
           
-          <a class="navbar-brand" href="/transferencias">Página de realizar transferências</a>
+          <a class="navbar-brand" href="/transferencia">Página de realizar transferências</a>
   </li>
   <li class="list-group-item">
           
