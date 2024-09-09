@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Endereco;
+use App\Models\User;
+use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -21,15 +24,28 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    protected $model=User::class;
+    public function withFaker()
     {
+        return FakerFactory::create('pt_BR');
+    }
+    public function definition(): array
+    { 
+        $gerentesPossiveis = User::where('cargo','gerente')->pluck('id')->toArray();
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->name(),
+            'email'=>  $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' =>  Hash::make('password'),
             'remember_token' => Str::random(10),
-        ];
+             'endereco_id' => Endereco::factory()->create()->id,   
+              'numero_telefone' => $this->faker->phoneNumber(),  
+               'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'), 
+                'cpf' => $this->faker->cpf(),
+                'foto' => null,
+                'usuario_responsavel_id' => fake()->randomElement($gerentesPossiveis),
+            ];
+        
     }
 
     /**
