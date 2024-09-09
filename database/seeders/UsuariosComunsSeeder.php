@@ -18,7 +18,7 @@ class UsuariosComunsSeeder extends Seeder
         foreach($users as $user){
             $dados=gerarNumeroSenhaLimiteSaldo();
             $dados['numero_agencia']= gerarNumeroAgencia();
-            $dados['numero']=gerarNumeroConta();
+            $dados['numero_conta']=gerarNumeroConta();
             $dados['user_id']=$user->id;
               Conta::create($dados);  
         }

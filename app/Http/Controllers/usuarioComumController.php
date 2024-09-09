@@ -72,11 +72,12 @@ class usuarioComumController extends Controller
                  "endereco_id" => $endereco->id,
         ];
   
-        $user=$controller->store($request,$extras);
+        
          
         $dadosConta=gerarNumeroSenhaLimiteSaldo();
         $dadosConta['numero_agencia']=gerarNumeroAgencia();
-        $dadosConta['numero']=gerarNumeroConta();
+        $dadosConta['numero_conta']=gerarNumeroConta();
+        $user=$controller->store($request,$extras);
         $dadosConta['user_id']=$user->id;
         Conta::create($dadosConta);
         return redirect('/usuariosComuns')->with('sucesso','cadastro realizado com sucesso');

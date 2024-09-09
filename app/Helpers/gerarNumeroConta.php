@@ -5,7 +5,7 @@ use Faker\Factory;
 
 if (! function_exists('gerarNumeroConta')) {
     function gerarNumeroConta() {
-        $numeros=Conta::query()->get(['numero'])->toArray();
+        $numeros=Conta::query()->get(['numero_conta'])->toArray();
         $faker=Factory::create(('pt_BR'));
         $num=-1;
         do{

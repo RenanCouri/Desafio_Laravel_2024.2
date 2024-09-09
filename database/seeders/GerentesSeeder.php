@@ -18,7 +18,7 @@ class GerentesSeeder extends Seeder
         foreach($gerentes as $gerente){
             $dados=gerarNumeroSenhaLimiteSaldo();
             $dados['numero_agencia']= gerarNumeroAgencia();
-            $dados['numero']=gerarNumeroConta();
+            $dados['numero_conta']=gerarNumeroConta();
             $dados['user_id']=$gerente->id;
               Conta::create($dados); 
             $gerente->usuario_responsavel_id=$gerente->id;
