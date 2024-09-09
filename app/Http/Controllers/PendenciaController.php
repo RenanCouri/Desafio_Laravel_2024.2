@@ -31,7 +31,7 @@ class PendenciaController extends Controller
         $pendencia=Pendencia::find($request->id);
         if($pendencia->foi_resolvida)
           return redirect('/pendencias')->withErrors('Você não pode alterar uma pendência já resolvida');
-        if($pendencia!==null && !$pendencia->foi_resolvida){
+        if($pendencia!==null){
           
             
             $transferencia=Transacao::find($pendencia->transacao_id);

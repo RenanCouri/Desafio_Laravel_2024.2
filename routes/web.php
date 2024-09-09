@@ -7,7 +7,11 @@ use App\Http\Controllers\PendenciaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransacaoController;
 use App\Http\Controllers\usuarioComumController;
+use App\Http\Requests\PdfExtratoRequest;
+use App\Models\Transacao;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf ;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +54,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/pendencias', [PendenciaController::class, 'acao']);
     Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo');
     Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']) ;
-    Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato');;
+    Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato');
+    Route::post('/pdf_extrato', function(PdfExtratoRequest $request){
+        $user=$request->user();
+        $conta=$user->conta;
+        $meses=3;
+        if($request->data==1)
+           $meses=6;
+        $data_ini=Carbon::parse(today('America/Sao_Paulo'))->subMonths($meses);
+        $transacoes=(Transacao::query()->where('esta_pendente',false))->where('conta_remetende_id',$conta->id)->orWhere('conta_destinatario_id',$conta->id)->where('created_at','>=',$data_ini)->get();
+        
+        
+        $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses'));
+    })->can('acessarExtrato');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
