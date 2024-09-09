@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Comunicacao as EventsComunicacao;
+use App\Mail\Comunicacao;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ComunicacaoController extends Controller
 {
     public function index()  {
         return view('comunicacao.index');
     }
-    public function enviar()  {
+    public function enviar(Request $request)  {
         
+        $cargos=$request->cargosChecagem;
+        $users=[];
+        foreach($cargos as $cargo)
+          $users[$cargo]=User::query()->where('cargo',$cargo)->get();
+        event(new EventsComunicacao(['nome'=>$request->user()->name,
+        'email'=>$request->user()->email,
+        'assunto'=>$request->titulo,
+        'conteudo'=>$request->conteudo,
+         'cargos'=>$cargos] ));
     }
 
 }
