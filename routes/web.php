@@ -18,14 +18,19 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/dashboard', function () {
+
+Route::get('/dashboard2', function () {
     return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard2');
+Route::get('/dashboard',function(Request $request){
+    $texto="usuariosComuns.dashboard";
+    if($request->user()->cargo==='gerente')
+      $texto="gerentes.dashboard";
+    if($request->user()->cargo==='administrador')
+       $texto="administradores.dashboard";
+    return view($texto);
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/usuariosComuns', [usuarioComumController::class, 'index']);
@@ -76,14 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/dashboard2',function(Request $request){
-        $texto="usuariosComuns.dashboard";
-        if($request->user()->cargo==='gerente')
-          $texto="gerentes.dashboard";
-        if($request->user()->cargo==='administrador')
-           $texto="administradores.dashboard";
-        return view($texto);
-    });
+    
 });
 
 require __DIR__ . '/auth.php';

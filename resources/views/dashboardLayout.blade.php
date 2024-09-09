@@ -36,17 +36,17 @@
 </head>
 <body style="height:100vh !important;">
    
- <nav class="navbar d-flex justify-content-between p-3" style="background-color:lightblue"> 
+ <nav class="navbar d-flex justify-content-between p-3" style="background-color:lightblue;min-height:12vh"> 
  <div class="navbar-text" style="font-size:1.5em;font-weight:bold">Dashboard</div>
 <form method="POST" class=""  action="http://127.0.0.1:8000/logout" onsubmit="return confirm('Tem certeza que deseja se deslogar?')">
     @csrf
     
      <a class="navbar-brand btn btn-danger" href="http://127.0.0.1:8000/logout" onclick="event.preventDefault();
-        this.closest('form').submit();">Log Out</a>
+        this.closest('form').submit();">Deslogar</a>
 </form>
 </nav>
-<div style="flex-direction:column;background-color:lightgray;" class="d-flex"> 
-    <h2 style="text-align:center ; padding:2px; background-color:rgb(100,175,220)">Bem vindo ao sistema! Aqui estão as páginas que por você podem ser acessadas: </h2> 
+<div style="flex-direction:column;background-color:lightgray;margin-top:5vh; border-radius:10px" class="d-flex mx-2"> 
+    <h2 class="d-flex justify-content-center align-items-center mb-10"style="margin-bottom:10vh; padding:2px; background-color:rgb(100,175,220);min-height:15vh;border-radius:10px">Bem vindo ao sistema! Aqui estão as páginas que por você podem ser acessadas: </h2> 
     <ul style="list-style:none; flex-direction:row;margin:40px auto;width:90%;gap:5%" class="list-group flex-direction-row flex-wrap justify-content-around">
         <li class="list-group-item">
           
