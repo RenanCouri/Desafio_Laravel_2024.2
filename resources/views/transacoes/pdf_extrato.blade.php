@@ -1,5 +1,11 @@
 @extends('layout')
-
+@section('adicoes_cabecalho')
+<style>
+    nav{
+        display:none !important;
+    }
+</style>
+@endsection
 @section('TituloCabecalho')
 extrato_bancario
 @endsection
@@ -7,12 +13,16 @@ extrato_bancario
 Extrato Bancário
 @endsection
 @section('conteudo')
-<div class="d-flex justify-content-between px-5 py-3"><div style="font-weight:bold">Saldo: R$ {{number_format($conta->saldo,2,',','')}}</div>
-<h2>Transações nos últimos {{$meses}} da conta</h2> 
+<div class="d-flex justify-content-between px-5 py-3">
+    <div style="font-weight:bold;font-size:1.2em">Saldo: R$ {{number_format($conta->saldo,2,',','')}}</div>
+<div style="font-weight:bold;font-size:1.2em">Usuário: {{$conta->user->name}}</div>
+<div style="font-weight:bold;font-size:1.2em"> Período selecionado: últimos {{$meses}} meses</div> 
+</div>
+
 <table class="table mx-2">      
 <thead>
             <tr>
-                <th>Data</th>
+                <th>Data e hora</th>
                 <th>Tipo</th>
                 <th>Remetente</th>
                 <th>Destinatário</th>
@@ -20,7 +30,7 @@ Extrato Bancário
             </tr>
         </thead>
         <tbody>
-            @for($transacoes as $transacao)
+            @foreach($transacoes as $transacao)
               <tr class="table-row">
                    <td>{{$transacao->created_at}}</td>
                    <td>{{$transacao->tipo}}</td>
@@ -28,7 +38,7 @@ Extrato Bancário
                    <td>{{$transacao->contaDes->user->name}}</td>
                    <td>R$ {{number_format($transacao->valor,2,',','')}}</td>
           </tr>
-             @endfor
+             @endforeach
         </tbody>
      </table>
 @endsection  

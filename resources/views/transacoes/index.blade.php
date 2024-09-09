@@ -7,22 +7,21 @@ extrato_bancario
 Extrato Bancário
 @endsection
 @section('conteudo')
-<div class="d-flex justify-content-between px-5 py-3"><div style="font-weight:bold">Saldo: R$ {{number_format($conta->saldo,2,',','')}}</div> 
+<div class="d-flex justify-content-between px-5 py-3"><div style="font-weight:bold;font-size:1.2em">Saldo: R$ {{number_format($conta->saldo,2,',','')}}</div> 
 <form action="/pdf_extrato" method="post" class="form">
     @csrf
-    <select class="form-select mt-3"  name="aprovado" id="aprovado">
-        <option type="number" value="1">Últimos 3 meses</option>
-        <option type="number" value="0">Últimos 6 meses</option>
+    <button type="submit" class="btn btn-primary">Gerar relatório em PDF</button>
+    <select class="form-select mt-3"  name="data" id="data" required>
+        <option type="number" value="0">Últimos 3 meses</option>
+        <option type="number" value="1">Últimos 6 meses</option>
     </select>
-
-    <button type="submit" class="btn btn-primary">Gerar relatório em PDF</button></div>
 </form>
-
+</div>
 <table class="table mx-2">
       <caption>Tabela contendo últimas 10 transações da conta</caption>        
 <thead>
             <tr>
-                <th>Data</th>
+                <th>Data e hora</th>
                 <th>Tipo</th>
                 <th>Remetente</th>
                 <th>Destinatário</th>

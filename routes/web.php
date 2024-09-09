@@ -8,6 +8,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransacaoController;
 use App\Http\Controllers\usuarioComumController;
 use App\Http\Requests\PdfExtratoRequest;
+use App\Models\Emprestimo;
+use App\Models\Pendencia;
 use App\Models\Transacao;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf ;
@@ -48,13 +50,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/excluirAdministrador', [adminController::class, 'destroy']);
     Route::get('/saque_deposito', [TransacaoController::class, 'saque_deposito']);
     Route::post('/saque_deposito', [TransacaoController::class, 'sacar_ou_depositar']);
-    Route::get('/transferencia', [TransacaoController::class, 'transferencia'])->can('acessarExtrato');
+    Route::get('/transferencia', [TransacaoController::class, 'transferencia'])->can('acessarExtrato',[Transacao::class]);
     Route::post('/transferencia', [TransacaoController::class, 'requerirTransferencia']);
-    Route::get('/pendencias', [PendenciaController::class, 'index'])->can('paginaPendencias');
+    Route::get('/pendencias', [PendenciaController::class, 'index'])->can('paginaPendencias',[Pendencia::class]);
     Route::post('/pendencias', [PendenciaController::class, 'acao']);
-    Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo');
+    Route::get('/emprestimo', [EmprestimoController::class, 'index'])->can('paginaEmprestimo',[Emprestimo::class]);
     Route::post('/emprestimo', [EmprestimoController::class, 'solicitacao']) ;
-    Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato');
+    Route::get('/extrato', [TransacaoController::class, 'index'])->can('acessarExtrato',[Transacao::class]);
     Route::post('/pdf_extrato', function(PdfExtratoRequest $request){
         $user=$request->user();
         $conta=$user->conta;
@@ -62,11 +64,12 @@ Route::middleware('auth')->group(function () {
         if($request->data==1)
            $meses=6;
         $data_ini=Carbon::parse(today('America/Sao_Paulo'))->subMonths($meses);
-        $transacoes=(Transacao::query()->where('esta_pendente',false))->where('conta_remetende_id',$conta->id)->orWhere('conta_destinatario_id',$conta->id)->where('created_at','>=',$data_ini)->get();
+        $transacoes=(Transacao::query()->where('esta_pendente',false))->where('conta_remetente_id',$conta->id)->orWhere('conta_destinatario_id',$conta->id)->where('created_at','>=',$data_ini)->get();
+       $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses'));
+        return $pdf->download('extrato_bancario.pdf');
         
         
-        $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses'));
-    })->can('acessarExtrato');
+    })->can('acessarExtrato',[Transacao::class]);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
