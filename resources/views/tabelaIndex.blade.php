@@ -53,6 +53,8 @@
     </tbody>
 </table>
 <div style="width:50%;margin:auto">
+ @if(!is_array($users))   
 {{ $users->links() }}
+@endif
 </div>
 @endsection

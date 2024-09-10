@@ -14,7 +14,7 @@ class TransferenciaRequest extends FormRequest
      */
     public function authorize(Request $request): bool
     {
-        return $request->user()->can('requerirTransferencia',[Transacao::class, Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia)->get()]);
+        return $request->user()->can('requerirTransferencia',[Transacao::class, (Conta::query()->where('numero_conta',$request->conta)->where('numero_agencia',$request->agencia))->get()[0]]);
     }
 
     /**
@@ -25,7 +25,7 @@ class TransferenciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'valor'=>['requeired','gt:0'],
+            'valor'=>['required','gt:0'],
             'senha_alvo'=>['required','numeric','digits:6'],
             'agencia'=>['required','string'],
             'conta'=>['required','string']

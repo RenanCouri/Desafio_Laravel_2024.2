@@ -58,6 +58,7 @@ class TransacaoPolicy
           return Response::deny();
         if($model===null )
           return Response::denyAsNotFound('conta não encontrada');
+        return Response::allow();
     }
     /**
      * Determine whether the user can update the model.

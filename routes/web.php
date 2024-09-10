@@ -72,7 +72,8 @@ Route::middleware('auth')->group(function () {
            $meses=6;
         $data_ini=Carbon::parse(today('America/Sao_Paulo'))->subMonths($meses);
         $transacoes=(Transacao::query()->where('esta_pendente',false))->where('conta_remetente_id',$conta->id)->orWhere('conta_destinatario_id',$conta->id)->where('created_at','>=',$data_ini)->get();
-       $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses'));
+        $emitido=today('America/Sao_Paulo');
+        $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses','emitido'));
         return $pdf->download('extrato_bancario.pdf');
         
         

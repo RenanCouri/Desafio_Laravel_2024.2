@@ -33,8 +33,16 @@ Extrato Bancário
               <tr class="table-row">
                    <td>{{$transacoes[$i]->created_at}}</td>
                    <td>{{$transacoes[$i]->tipo}}</td>
-                   <td>{{$transacoes[$i]->contaRem->user->name}}</td>
-                   <td>{{$transacoes[$i]->contaDes->user->name}}</td>
+                   <td>@if($transacoes[$i]->contaRem==null)
+                   'Conta deletada'
+                   @else
+                    {{$transacoes[$i]->contaRem->user->name }}
+                    @endif</td>
+                    <td>@if($transacoes[$i]->contaDes==null)
+                   'Conta deletada'
+                   @else
+                    {{$transacoes[$i]->contaDes->user->name }}
+                @endif</td>
                    <td>R$ {{number_format($transacoes[$i]->valor,2,',','')}}</td>
           </tr>
              @endfor
