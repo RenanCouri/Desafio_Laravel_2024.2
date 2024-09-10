@@ -19,6 +19,15 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->string('foto')->nullable();
+            $table->string('numero_telefone',20);
+            $table->date('data_nascimento');
+            $table->string('CPF',20);
+            $table->enum('cargo',['usuario_comum','gerente','administrador']);
+            $table->unsignedBigInteger('endereco_id');
+            $table->foreign('endereco_id')->references('id')->on('enderecos');
+            $table->unsignedBigInteger('usuario_responsavel_id');
+            $table->foreign('usuario_responsavel_id')->references('id')->on('users');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
