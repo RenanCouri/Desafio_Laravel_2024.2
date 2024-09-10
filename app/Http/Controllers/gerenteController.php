@@ -8,6 +8,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use App\Models\Conta;
 use App\Models\Endereco;
+use Database\Factories\GerenteFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -188,8 +189,23 @@ class gerenteController extends Controller
                 return redirect('/gerentes')->withErrors('Gerente não encontrado');
             
         }
-        
-       
+        $comuns=$user->getUsuariosComuns();
+        $possiveis=User::query()->where('cargo','gerente')->whereNot('id',$user->id)->get();
+        if(sizeof($possiveis)===0){
+           $gerente=(new GerenteFactory)->create();
+           $dados=gerarNumeroSenhaLimiteSaldo();
+            $dados['numero_agencia']= gerarNumeroAgencia();
+            $dados['numero_conta']=gerarNumeroConta();
+            $dados['user_id']=$gerente->id;
+              Conta::create($dados); 
+        }
+        else{
+            $gerente=$possiveis[0];
+        }
+        foreach($comuns as $comum){
+            $comum->usuario_responsavel_id=$gerente->id;
+            $comum->save();
+        }
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;

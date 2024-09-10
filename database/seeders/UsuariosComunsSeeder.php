@@ -14,7 +14,7 @@ class UsuariosComunsSeeder extends Seeder
      */
     public function run(): void
     {
-        $users=(new UserFactory())->count(10)->create();
+        $users=(new UserFactory())->count(30)->create();
         foreach($users as $user){
             $dados=gerarNumeroSenhaLimiteSaldo();
             $dados['numero_agencia']= gerarNumeroAgencia();

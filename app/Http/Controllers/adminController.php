@@ -148,6 +148,16 @@ class adminController extends Controller
         
         $atual= $request->user();
         $redr = $atual->id==$request->user_id;
+        
+        $possiveis=User::query()->where('cargo','administrador')->whereNot('id',$user->id)->get();
+        $adms=$user->users;
+        if(sizeof($possiveis)!==0){
+            $criadorId=($possiveis[0])->id;
+        foreach($adms as $adm){
+            $adm->usuario_responsavel_id=$criadorId;
+            $adm->save();
+        }
+    }
 
         $user->delete();
 
