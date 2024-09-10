@@ -27,11 +27,13 @@ class AdministradorFactory extends Factory
     public function definition(): array
     {
         
-        $adms=User::query()->where('cargo','administrador')->get();
+        $adms=User::query()->where('cargo','administrador')->get(['id'])->toArray();
         if($adms===null|| sizeOf($adms)===0)
            $idEscolhido=1;
         else
-          $idEscolhido=fake()->randomElement($adms)['administrador'];
+          $idEscolhido=fake()->randomElement($adms)['id'];
+      
+        $imagemReal= 'imagens/'.$this->faker->image('public/storage/imagens',300,270,null,false,true);
         return [
             'name' => $this->faker->name(),
             'email'=>  $this->faker->unique()->safeEmail,
@@ -42,7 +44,7 @@ class AdministradorFactory extends Factory
             'numero_telefone' => $this->faker->phoneNumber(),
             'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'),
             'cpf' => $this->faker->cpf(),
-            'foto' => $this->faker->image('public/storage/imagens',300,270),
+            'foto' => $imagemReal,
             'usuario_responsavel_id' => $idEscolhido,
             'cargo' => 'administrador'
         ];

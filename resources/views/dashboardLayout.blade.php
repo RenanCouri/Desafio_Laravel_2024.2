@@ -42,7 +42,7 @@
     @csrf
     
      <a class="navbar-brand btn btn-danger" href="http://127.0.0.1:8000/logout" onclick="event.preventDefault();
-        this.closest('form').submit();">Deslogar</a>
+        this.closest('form').submit();">Log Out</a>
 </form>
 </nav>
 <div style="flex-direction:column;background-color:lightgray;margin-top:5vh; border-radius:10px" class="d-flex mx-2"> 

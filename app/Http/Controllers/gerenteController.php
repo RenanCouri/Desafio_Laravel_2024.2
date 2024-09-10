@@ -209,9 +209,14 @@ class gerenteController extends Controller
         $redr = $atual->id==$request->user_id;
      
         $conta=$user->conta;
-        $conta->delete();
+        $endereco=Endereco::find($user->endereco_id);
+        if($conta!==null)
+          $conta->delete();
+        $user->usuario_responsavel_id=1;
+        $user->save();
         $user->delete();
-
+        $endereco->delete();
+        
         if($redr){
          Auth::logout();
           return Redirect::to('/');

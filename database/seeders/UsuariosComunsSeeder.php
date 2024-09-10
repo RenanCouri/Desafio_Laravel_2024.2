@@ -22,6 +22,7 @@ class UsuariosComunsSeeder extends Seeder
             $dados['user_id']=$user->id;
               Conta::create($dados);  
         }
+              
         
     }
 }

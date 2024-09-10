@@ -158,8 +158,14 @@ class adminController extends Controller
             $adm->save();
         }
     }
-
+        $endereco=Endereco::find($user->endereco_id);
+        if($user->id===$user->user_responsavel_id)
+        {
+            $user->user_responsavel_id++;
+            $user->save();
+        }  
         $user->delete();
+        $endereco->delete();
 
         
 

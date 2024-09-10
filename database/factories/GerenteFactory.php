@@ -25,6 +25,7 @@ class GerenteFactory extends Factory
     }
     public function definition(): array
     {
+        $imagemReal= 'imagens/'.$this->faker->image('public/storage/imagens',300,270,null,false,true);
         return [
             'name' => $this->faker->name(),
             'email'=>  $this->faker->unique()->safeEmail,
@@ -35,7 +36,7 @@ class GerenteFactory extends Factory
             'numero_telefone' => $this->faker->phoneNumber(),
             'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'),
             'cpf' => $this->faker->cpf(),
-            'foto' => $this->faker->image('public/storage/imagens',300,270),
+            'foto' => $imagemReal,
             'usuario_responsavel_id' => 1,
             'cargo' => 'gerente'
         ];

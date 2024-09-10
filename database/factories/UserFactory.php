@@ -44,7 +44,9 @@ class UserFactory extends Factory
        } 
        else
             $id=fake()->randomElement($gerentesPossiveis);
-        
+        $imagemReal=null;
+        if(fake()->numberBetween(0,5)>3)
+           $imagemReal= 'imagens/'.$this->faker->image('public/storage/imagens',300,270,null,false,true);
           
         return [
             'name' => $this->faker->name(),
@@ -56,7 +58,7 @@ class UserFactory extends Factory
               'numero_telefone' => $this->faker->phoneNumber(),  
                'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'), 
                 'cpf' => $this->faker->cpf(),
-                'foto' => null,
+                'foto' => $imagemReal,
                 'usuario_responsavel_id' => $id,
                 'cargo' => 'usuario_comum'
             ];
