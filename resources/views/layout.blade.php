@@ -11,7 +11,7 @@
 <body>
      <nav style="background-color:lightblue" class="navbar navbar-light p-3">
          <div class="navbar-text">Navegação</div>
-        <a class="navbar-brand" href="/dashboard2">Dashboard</a>
+        <a class="navbar-brand" href="/dashboard">Dashboard</a>
         <a class="navbar-brand" href="/usuariosComuns">Tabela Usuários Comuns</a>
      </nav>
     <main>

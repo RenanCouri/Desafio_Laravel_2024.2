@@ -19,10 +19,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-
+/*
 Route::get('/dashboard2', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard2');
+*/
 Route::get('/dashboard',function(Request $request){
     $texto="usuariosComuns.dashboard";
     if($request->user()->cargo==='gerente')
@@ -78,9 +79,11 @@ Route::middleware('auth')->group(function () {
     })->can('acessarExtrato',[Transacao::class]);
     Route::get('/comunicacao_email',[ComunicacaoController::class,'index'])->can('paginaAdministrador', User::class);
     Route::post('/enviar_email',[ComunicacaoController::class,'enviar'])->can('paginaAdministrador', User::class);
+    /*
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    */
     
 });
 
