@@ -18,7 +18,7 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function acaoUsuarioComum(User $user, int $model): Response
+    public function acaoUsuarioComum(User $user, $model): Response
     {
         $model=User::find($model);
         if($model===null || $model->cargo!=='usuario_comum')
@@ -28,8 +28,9 @@ class UserPolicy
                 ? Response::allow()
                 : Response::deny('Você não tem permissão de agir sobre o cadastro dele');
     }
-    public function acaoGerente(User $user, int $model): Response
+    public function acaoGerente(User $user, $model): Response
     {
+        
         $model=User::find($model);
         if($model===null || $model->cargo!=='gerente')
             return Response::denyAsNotFound('Gerente não encontrado');
@@ -39,13 +40,13 @@ class UserPolicy
                 ? Response::allow()
                 : Response::deny('Esse gerente não existe ou você não tem permissão de agir sobre o cadastro dele');
     }
-    public function acaoAdministrador(User $user, int $model): Response
+    public function acaoAdministrador(User $user, $model): Response
     {
         $model=User::find($model);
         if($model===null || $model->cargo!=='administrador')
             return Response::denyAsNotFound('Administrador não encontrado');
         return $user->cargo==='administrador'
-        &&($user->usuario_responsavel_id!==$model->id)
+        &&($user->id===$model->id || $user->usuario_responsavel_id!==$model->id)
         
         
                 ? Response::allow()

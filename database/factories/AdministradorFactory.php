@@ -42,8 +42,9 @@ class AdministradorFactory extends Factory
             'numero_telefone' => $this->faker->phoneNumber(),
             'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'),
             'cpf' => $this->faker->cpf(),
-            'foto' => $this->faker->image('public/storage',300,270),
-            'usuario_responsavel_id' => $idEscolhido
+            'foto' => $this->faker->image('public/storage/imagens',300,270),
+            'usuario_responsavel_id' => $idEscolhido,
+            'cargo' => 'administrador'
         ];
     }
 }

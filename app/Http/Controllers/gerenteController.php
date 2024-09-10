@@ -42,6 +42,7 @@ class gerenteController extends Controller
      */
     public function store(EnderecoRequest $request)
     {
+        Gate::authorize('createGerente', [User::class,$request->user()->id]);  
         $controller= new RegisteredUserController();
       
         

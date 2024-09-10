@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Conta;
 use App\Models\Endereco;
 use App\Models\User;
 use Faker\Factory as FakerFactory;
@@ -32,6 +33,19 @@ class UserFactory extends Factory
     public function definition(): array
     { 
         $gerentesPossiveis = User::where('cargo','gerente')->pluck('id')->toArray();
+       if($gerentesPossiveis===null || sizeof($gerentesPossiveis)===0){
+         $gerente= (new GerenteFactory())->create();
+         $id=$gerente->id;
+         $dados=gerarNumeroSenhaLimiteSaldo();
+            $dados['numero_agencia']= gerarNumeroAgencia();
+            $dados['numero_conta']=gerarNumeroConta();
+            $dados['user_id']=$gerente->id;
+              Conta::create($dados); 
+       } 
+       else
+            $id=fake()->randomElement($gerentesPossiveis);
+        
+          
         return [
             'name' => $this->faker->name(),
             'email'=>  $this->faker->unique()->safeEmail(),
@@ -43,7 +57,8 @@ class UserFactory extends Factory
                'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'), 
                 'cpf' => $this->faker->cpf(),
                 'foto' => null,
-                'usuario_responsavel_id' => fake()->randomElement($gerentesPossiveis),
+                'usuario_responsavel_id' => $id,
+                'cargo' => 'usuario_comum'
             ];
         
     }

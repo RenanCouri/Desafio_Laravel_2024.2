@@ -36,7 +36,8 @@ class GerenteFactory extends Factory
             'data_nascimento' => $this->faker->dateTimeBetween('-120 years','-20 years'),
             'cpf' => $this->faker->cpf(),
             'foto' => $this->faker->image('public/storage/imagens',300,270),
-            'usuario_responsavel_id' => 1
+            'usuario_responsavel_id' => 1,
+            'cargo' => 'gerente'
         ];
     }
 }

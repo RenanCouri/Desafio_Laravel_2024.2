@@ -28,6 +28,7 @@ class usuarioComumController extends Controller
            $users=$user->getUsuariosComuns();
         }
            */
+          
         $permissao=true;  
         $user=$request->user(); 
         $atual=$user->id;
@@ -58,7 +59,8 @@ class usuarioComumController extends Controller
      */
     public function store(EnderecoRequest $request)
     {
-           
+      Gate::authorize('createUsuarioComum', [User::class,$request->user()->id]);  
+         
         $controller= new RegisteredUserController();
       
         

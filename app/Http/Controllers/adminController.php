@@ -67,6 +67,7 @@ class adminController extends Controller
      */
     public function show(int $admId,Request $request)
     {
+        Gate::authorize('createAdministrador', [User::class,$request->user()->id]);  
         $atual=$request->user();
         $user=User::find($admId);
             if( $user!==null && $user->cargo!=='administrador')
