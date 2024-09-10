@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
 class adminController extends Controller
@@ -121,11 +122,16 @@ class adminController extends Controller
         if($request->hasFile('foto')){
               $foto=$request->file('foto')->store('/imagens');
               $dadosUser['foto']=$foto;
-        }   
+        } 
+         
         $user->update(
             $dadosUser
         );
          $user->save();
+         if($request->password!=$user->password){
+            $user->password=Hash::make($request->password);
+            $user->save();
+          };
          return redirect('/administradores')->with('sucesso','Atualização realizado com sucesso');
     }
 

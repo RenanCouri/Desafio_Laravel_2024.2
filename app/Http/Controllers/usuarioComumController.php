@@ -11,6 +11,7 @@ use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
 class usuarioComumController extends Controller
@@ -186,6 +187,11 @@ class usuarioComumController extends Controller
         
         $user->update($dadosUser);
          $user->save();
+         if($request->password!=$user->password){
+           $user->password=Hash::make($request->password);
+           $user->save();
+         } 
+        ;
          return redirect('/usuariosComuns')->with('sucesso','atualização realizada com sucesso');
     }
 
@@ -234,6 +240,7 @@ class usuarioComumController extends Controller
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
+        
         return redirect('/usuariosComuns')->with('sucesso','exclusão realizada com sucesso');
 
     }

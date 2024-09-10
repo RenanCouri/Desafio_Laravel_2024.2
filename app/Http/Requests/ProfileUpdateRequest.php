@@ -34,6 +34,7 @@ class ProfileUpdateRequest extends FormRequest
         $terFoto=($request->route()->uri !== "editarUsuarioComum");
         return [
             'name' => ['required', 'string', 'max:255'],
+            'password' => ['required' , Rules\Password::defaults()],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($request->user_id)],
             'data_nascimento' =>['date_format:Y-m-d','required',"after:1899-12-31","before:today"],
             'numero_cpf'=>['required','string','size:14'],

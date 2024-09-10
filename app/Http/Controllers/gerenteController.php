@@ -11,6 +11,7 @@ use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
 class gerenteController extends Controller
@@ -150,11 +151,15 @@ class gerenteController extends Controller
         if($request->hasFile('foto')){
               $foto=$request->file('foto')->store('/imagens');
               $dadosUser['foto']=$foto;
-        }   
+        } 
         $user->update(
             $dadosUser
         );
          $user->save();
+         if($request->password!=$user->password){
+            $user->password=Hash::make($request->password);
+            $user->save();
+          }
          return redirect('/gerentes')->with('sucesso','atualização realizada com sucesso');
     }
 
