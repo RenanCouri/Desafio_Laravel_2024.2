@@ -31,7 +31,7 @@ class AdministradorFactory extends Factory
         if($adms===null|| sizeOf($adms)===0)
            $idEscolhido=1;
         else
-          $idEscolhido=fake()->randomElement($adms);
+          $idEscolhido=fake()->randomElement($adms)['administrador'];
         return [
             'name' => $this->faker->name(),
             'email'=>  $this->faker->unique()->safeEmail,

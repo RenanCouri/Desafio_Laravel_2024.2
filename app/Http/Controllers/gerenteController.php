@@ -18,11 +18,14 @@ class gerenteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users=User::query()->where('cargo','gerente')->get();
+        $user=$request->user();
+        if($user->cargo==='administrador')
+           $users=User::query()->where('cargo','gerente')->paginate(5);
         $permissao=true;
-        return view('gerentes.index',compact('users','permissao'));
+        $atual=$user->id;
+        return view('gerentes.index',compact('users','permissao','atual'));
     }
 
     /**
@@ -53,11 +56,10 @@ class gerenteController extends Controller
                  "endereco_id" => $endereco->id,
         ];
   
-        $user=$controller->store($request,$extras);
-      
         $dadosConta=gerarNumeroSenhaLimiteSaldo();
         $dadosConta['numero_agencia']=gerarNumeroAgencia();
-        $dadosConta['numero']=gerarNumeroConta();
+        $dadosConta['numero_conta']=gerarNumeroConta();
+        $user=$controller->store($request,$extras);
         $dadosConta['user_id']=$user->id;
         Conta::create($dadosConta);
         
@@ -161,6 +163,8 @@ class gerenteController extends Controller
      */
     public function destroy(Request $request)
     {
+        if($request->user_id===null)
+          return redirect('/gerentes')->withErrors('Campo de id do gerente não passado');
         Gate::authorize('acaoGerente', [User::class,$request->user_id]);
         $atual=$request->user();
         $gerenteId=$request->user_id;

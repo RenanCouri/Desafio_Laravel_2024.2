@@ -20,10 +20,13 @@ class adminController extends Controller
     public function index(Request $request)
     {
         $responsavelId=$request->user()->usuario_responsavel_id;
-        $admCriador=User::find($responsavelId);
-        $users=User::query()->where('cargo','administrador')->whereNot('id',$responsavelId)->get();
+        $admCriador=0;
+        if($responsavelId !== $request->user()->id)
+           $admCriador=$responsavelId;
+        $atual=$request->user()->id;
+        $users=User::where('cargo','administrador')->paginate();
         $permissao=true;
-        return view('administradores.index',compact('users','permissao','admCriador'));
+        return view('administradores.index',compact('users','permissao','admCriador','atual'));
     }
 
     /**
@@ -131,6 +134,8 @@ class adminController extends Controller
      */
     public function destroy(Request $request)
     {
+        if($request->user_id===null)
+          return redirect('/administradores')->withErrors('Campo de id do administrador não passado');
         Gate::authorize('acaoAdministrador', [User::class,$request->user_id]);
         $user = User::find($request->user_id);
         

@@ -29,15 +29,16 @@ class usuarioComumController extends Controller
            */
         $permissao=true;  
         $user=$request->user(); 
+        $atual=$user->id;
         if(($user->cargo==='administrador')) 
-           $users=$user->where('cargo','usuario_comum')->get();
+           $users=User::query()->where('cargo','usuario_comum')->paginate(5);
         else if($user->cargo==='gerente')
-           $users=$user->getUsuariosComuns();
+           $users=User::query()->where('usuario_responsavel_id',$user->id)->where('cargo','usuario_comum')->paginate(5);
         else{
            $users[]=$user;
            $permissao=!$permissao;
         }
-        return view('usuariosComuns.index',compact('users','permissao'));
+        return view('usuariosComuns.index',compact('users','permissao','atual'));
      }
 
     /**
@@ -193,6 +194,8 @@ class usuarioComumController extends Controller
      */
     public function destroy(Request $request)
     {
+      if($request->user_id===null)
+        return redirect('/usuariosComuns')->withErrors('Campo de id do usuário não passado');
       Gate::authorize('acaoUsuarioComum', [User::class,$request->user_id]);
         $userId=$request->user_id;
         $user=User::find($userId);

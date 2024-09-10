@@ -17,17 +17,25 @@
         </tr>
     </thead>
     <tbody>
-        @if(isset($admCriador) && $admCriador!==null)
-        <td>{{$admCriador->name}}(Aquele que o cadastrou)</td>
-        <td>{{$admCriador->email}}</td>
-        <td>{{$admCriador->CPF}}</td>
-        <td>Nenhuma ação disponível</td>
-        @endif
+       
+        
+     
+        
         @foreach($users as $user)
         <tr class="table-row">
-            <td>{{$user->name}}</td>
+            <td>{{$user->name}} 
+                @if($user->id===$atual)
+                  <em> (Você)</em>
+                @elseif(isset($admCriador) && $admCriador===$user->id)  
+                <em>(Quem o cadastrou)</em>
+                @endif  
+            </td>
+
             <td>{{$user->email}}</td>
             <td>{{$user->CPF}}</td>
+            @if(isset($admCriador) && $admCriador===$user->id) 
+            <td style="text-align: center">Nenhuma ação disponível</td>
+            @else
             <td class="d-flex flex-wrap gap-1 justify-content-center">
                 <a href="{{'/editar'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-primary mx-2">Editar</button></a>
                 <a href="{{'/ver'}}@yield('nome_pagina')/{{$user->id}}"><button class="btn btn-secondary mx-2">Ver</button></a>
@@ -38,8 +46,13 @@
                     <button type="submit" class="btn btn-danger mx-2">Excluir</button>
                 </form>
             </td>
+            @endif
         </tr>
         @endforeach
+        
     </tbody>
 </table>
+<div style="width:50%;margin:auto">
+{{ $users->links() }}
+</div>
 @endsection

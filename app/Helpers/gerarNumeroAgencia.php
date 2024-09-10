@@ -11,10 +11,11 @@ if (! function_exists('gerarNumeroAgencia')) {
            $num=$faker->numerify('####');
         else{
             $sorteio=$faker->numberBetween(0,sizeof($agencias));
-            if($sorteio<=2)
+            if($sorteio<=0)
                $num=$faker->numerify('####');
             else{
-                $num=$faker->randomElement($agencias);
+                $num=($faker->randomElement($agencias))['numero_agencia'];
+                
             }
         }
         return $num;
