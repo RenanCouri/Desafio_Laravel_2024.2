@@ -12,10 +12,19 @@ Pendências
 <ul style="list-style:none"class="list-group">
     <li style="border-bottom: 1px solid blue"></li>
 @foreach($pendencias as $pendencia)
+@if( ($pendencia->tipo==='transferencia' && $pendencia->transacao->conta_remetente_id!==null) || ($pendencia->tipo==='emprestimo' && $pendencia->emprestimo->conta_id!==null))
 <li class="list-group-item" style="border-bottom: 1px solid blue; padding:5px">
   <ul class="list-group">
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Titulo : </span>{{$pendencia->titulo}}</li>
-  <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Usuário : </span><a href="/verUsuarioComum/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}">{{$pendencia->transacao->contaRem->user->name ?? $pendencia->emprestimo->conta->user->name}}</a></li>
+  <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Usuário : 
+
+  </span><a 
+  @if(($pendencia->transacao!==null && $pendencia->transacao->contaRem->user->cargo=='gerente')||($pendencia->emprestimo!==null && $pendencia->emprestimo->conta->user->cargo=='gerente'))
+    href="verGerente/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}"  
+  @else
+  href="verUsuarioComum/{{$pendencia->transacao->contaRem->user->id ?? $pendencia->emprestimo->conta->user->id}}" 
+  @endif
+  >{{$pendencia->transacao->contaRem->user->name ?? $pendencia->emprestimo->conta->user->name}}</a></li>
   @if($pendencia->tipo==='transferencia')
   <li class="list-group-item"><span style="font-weight:bold; color:darkblue; font-size:1.5em">Limite : </span>R$ {{number_format($pendencia->transacao->contaRem->limite_transferencias,2,',','')}}</li>
   @endif
@@ -37,6 +46,7 @@ Pendências
   </form>
   </ul>
 </li>
+@endif
 @endforeach
 </ul>
 @endif

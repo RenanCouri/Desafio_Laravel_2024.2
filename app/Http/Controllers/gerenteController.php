@@ -25,7 +25,10 @@ class gerenteController extends Controller
         $user=$request->user();
         if($user->cargo==='administrador')
            $users=User::query()->where('cargo','gerente')->paginate(5);
+        else
+           $users[]=$user;
         $permissao=true;
+
         $atual=$user->id;
         return view('gerentes.index',compact('users','permissao','atual'));
     }
@@ -177,7 +180,7 @@ class gerenteController extends Controller
         $gerenteId=$request->user_id;
         if($atual->cargo==='gerente')
            {
-            if($atual->id!==$gerenteId)
+            if($atual->id!=$gerenteId)
               return redirect("/gerentes")->withErrors('Esse gerente não pode ser acessado por você');
             else
                $user=$atual;
@@ -214,15 +217,20 @@ class gerenteController extends Controller
           $conta->delete();
         $user->usuario_responsavel_id=1;
         $user->save();
-        $user->delete();
-        $endereco->delete();
+        
         
         if($redr){
          Auth::logout();
+         $user->delete();
+        $endereco->delete();
           return Redirect::to('/');
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
+        else{
+            $user->delete();
+        $endereco->delete();
+        }
         return redirect('/gerentes')->with('sucesso','exclusão realizado com sucesso');
     }
 }

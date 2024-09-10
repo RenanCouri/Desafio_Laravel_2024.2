@@ -17,10 +17,10 @@ return new class extends Migration
             $table->boolean('esta_pendente');
             $table->double('valor');
             $table->enum('tipo',['saque','deposito','transferencia','emprestimo','pagamento_emprestimo']);
-            $table->unsignedBigInteger('conta_remetente_id');
-            $table->foreign('conta_remetente_id')->references('id')->on('contas');
-            $table->unsignedBigInteger('conta_destinatario_id');
-            $table->foreign('conta_destinatario_id')->references('id')->on('contas');
+            $table->unsignedBigInteger('conta_remetente_id')->nullable();
+            $table->foreign('conta_remetente_id')->references('id')->on('contas')->nullOnDelete();
+            $table->unsignedBigInteger('conta_destinatario_id')->nullable();
+            $table->foreign('conta_destinatario_id')->references('id')->on('contas')->nullOnDelete();
             $table->unsignedBigInteger('autoridade_id')->nullable();
             $table->foreign('autoridade_id')->references('id')->on('users')->nullOnDelete();
         });

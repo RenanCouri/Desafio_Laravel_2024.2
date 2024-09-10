@@ -134,10 +134,10 @@ class usuarioComumController extends Controller
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
                 return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');
-            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
+            if($atual->cargo==='gerente' && !in_array($user,$atual->getUsuariosComuns()))
                return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
         }
-        $egrentes=null;
+        $gerentes=null;
         if($atual->cargo==='administrador'){
            $gerentes=User::query()->where('cargo','gerente')->whereNot('id',$user->usuario_responsavel_id)->get();
         }
@@ -220,7 +220,7 @@ class usuarioComumController extends Controller
             $user=User::find($userId);
             if($user===null || $user->cargo !== 'usuario_comum')
                 return redirect('/usuariosComuns')->withErrors('Usuário não encontrado');
-            if($atual->cargo==='gerente' && !$atual->getUsuariosComuns()->contains($user))
+            if($atual->cargo==='gerente' && !in_array($user,$atual->getUsuariosComuns()))
                return redirect('/usuariosComuns')->withErrors('Usuário não pode ser acessado por você');
             
         }
@@ -231,17 +231,20 @@ class usuarioComumController extends Controller
         $endereco=Endereco::find($user->endereco_id);
         if($conta!==null)
           $conta->delete();
-        $user->delete();
-        $endereco->delete();
+        
 
         
 
         if($redr){
          Auth::logout();
+         $user->delete();
+        $endereco->delete();
           return Redirect::to('/');
           $request->session()->invalidate();
         $request->session()->regenerateToken();
         }  
+        $user->delete();
+        $endereco->delete();
         
         return redirect('/usuariosComuns')->with('sucesso','exclusão realizada com sucesso');
 

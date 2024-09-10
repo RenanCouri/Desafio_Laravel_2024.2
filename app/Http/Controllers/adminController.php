@@ -164,18 +164,21 @@ class adminController extends Controller
             $user->user_responsavel_id++;
             $user->save();
         }  
-        $user->delete();
-        $endereco->delete();
+        
 
         
 
         if($redr){
          Auth::logout();
+         $user->delete();
+        $endereco->delete();
          $request->session()->invalidate();
         $request->session()->regenerateToken();
           return Redirect::to('/');
           
         }  
+        $user->delete();
+        $endereco->delete();
         return Redirect::to('/administradores')->with('sucesso','exclusão realizado com sucesso');
     }
 }

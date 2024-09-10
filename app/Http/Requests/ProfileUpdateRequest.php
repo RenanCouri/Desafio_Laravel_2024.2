@@ -38,7 +38,7 @@ class ProfileUpdateRequest extends FormRequest
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($request->user_id)],
             'data_nascimento' =>['date_format:Y-m-d','required',"after:1899-12-31","before:today"],
             'numero_cpf'=>['required','string','size:14'],
-            'numero_telefone'=>['required','numeric','max_digits:14'],
+            'numero_telefone'=>['required','string','max:18'],
             'foto' => ['extensions:jpg,png'],
             'usuario_responsavel_id'=>[Rule::prohibitedIf($request->user()->cargo!=='administrador' || $terFoto),Rule::requiredIf(!$terFoto && $request->user()->cargo==='administrador'),'numeric','gte:1']
         ];

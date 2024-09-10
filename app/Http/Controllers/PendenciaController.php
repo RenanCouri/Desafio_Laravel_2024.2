@@ -15,7 +15,19 @@ class PendenciaController extends Controller
      */
     public function index(Request $request)
     {
-        $pendencias= $request->user()->getPendenciasNaoResolvidas();
+        $pendenciasTeste= $request->user()->getPendenciasNaoResolvidas();
+        $pendencias=[];
+        foreach($pendenciasTeste as $pendencia){
+            if( ($pendencia->tipo==='transferencia' && $pendencia->transacao->conta_remetente_id!==null) || ($pendencia->tipo==='emprestimo' && $pendencia->emprestimo->conta_id!==null))
+            {
+                $pendencias[]=$pendencia;
+            }
+            else{
+                $pendencia->foi_resolvida=true;
+                $pendencia->save();
+                
+            }
+        }
         return view('pendencias.index',compact('pendencias'));
     }
 
@@ -33,7 +45,6 @@ class PendenciaController extends Controller
           return redirect('/pendencias')->withErrors('Você não pode alterar uma pendência já resolvida');
         if($pendencia!==null){
           
-            
             $transferencia=Transacao::find($pendencia->transacao_id);
             $emprestimo=Emprestimo::find($pendencia->emprestimo_id);
             

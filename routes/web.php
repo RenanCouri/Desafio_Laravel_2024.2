@@ -16,6 +16,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf ;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
 
 
@@ -72,7 +73,7 @@ Route::middleware('auth')->group(function () {
            $meses=6;
         $data_ini=Carbon::parse(today('America/Sao_Paulo'))->subMonths($meses);
         $transacoes=(Transacao::query()->where('esta_pendente',false))->where('conta_remetente_id',$conta->id)->orWhere('conta_destinatario_id',$conta->id)->where('created_at','>=',$data_ini)->get();
-        $emitido=today('America/Sao_Paulo');
+        $emitido=date_format(Date::today(),'d-m-Y');
         $pdf=Pdf::loadView('transacoes.pdf_extrato',compact('transacoes','conta','meses','emitido'));
         return $pdf->download('extrato_bancario.pdf');
         

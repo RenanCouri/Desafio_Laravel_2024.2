@@ -21,10 +21,10 @@ return new class extends Migration
             $table->double('quantidade_a_pagar')->nullable();
             $table->dateTime('data_limite')->nullable();
             $table->dateTime('data_pagamento')->nullable();
-            $table->unsignedBigInteger('conta_id');
-             $table->foreign('conta_id')->references('id')->on('contas');
+            $table->unsignedBigInteger('conta_id')->nullable();
+             $table->foreign('conta_id')->references('id')->on('contas')->nullOnDelete();
             $table->unsignedBigInteger('transacao_id')->nullable()->default(null);
-            $table->foreign('transacao_id')->references('id')->on('transacoes');
+            $table->foreign('transacao_id')->references('id')->on('transacoes')->nullOnDelete();
         });
     }
 
